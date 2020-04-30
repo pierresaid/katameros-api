@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Katameros.DTOs;
 using Katameros.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
@@ -18,25 +20,25 @@ namespace Katameros.Controllers
 
         [HttpGet]
         [Route("gregorian/{date}")]
-        public object GetFromGregorianDate(string date)
+        public async Task<DayReadings> GetFromGregorianDate(string date)
         {
             DateTime parsedDate = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
-            _lectionaryRepository.Configure();
-            var res = _lectionaryRepository.GetForDay(parsedDate);
+            await _lectionaryRepository.Configure();
+            var res = await _lectionaryRepository.GetForDay(parsedDate);
 
             return res;
         }
 
         [HttpGet]
         [Route("coptic/{date}")]
-        public object GetFromCopticDate(string date)
+        public async Task<DayReadings> GetFromCopticDate(string date)
         {
             var parsedCopticDate = LocalDatePattern.Create("dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture).WithCalendar(CalendarSystem.Coptic).Parse(date).Value;
             CopticDateHelper copticDateHelper = new CopticDateHelper(parsedCopticDate.Day, parsedCopticDate.Month, parsedCopticDate.Year);
 
-            _lectionaryRepository.Configure();
-            var res = _lectionaryRepository.GetForDay(copticDateHelper.Date);
+            await _lectionaryRepository.Configure();
+            var res = await _lectionaryRepository.GetForDay(copticDateHelper.Date);
 
             return res;
         }
