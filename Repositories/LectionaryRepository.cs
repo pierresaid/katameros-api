@@ -83,8 +83,9 @@ namespace Katameros.Repositories
             {
                 query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
             }
-            var bookTranlation = (await _context.BooksTranslations.FindAsync(passage.BookId, LanguageId)).Text;
-            passage.Ref = $"{bookTranlation} {passage.Chapter}:{versesRef}";
+            var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, LanguageId)).Text;
+            passage.Ref = $"{passage.Chapter}:{versesRef}";
+            passage.BookTranslation = bookTranslation;
             passage.Verses = query;
             return passage;
         }
@@ -122,7 +123,8 @@ namespace Katameros.Repositories
                 readings.Add(await MakeReading(psalmRef, ReadingType.Psalm));
             Reading gospel = await MakeReading(gospelRef, ReadingType.Gospel);
             readings.Add(gospel);
-            var evangelist = string.Concat(gospel.Passages.First().Ref.Where(char.IsLetter));
+            var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
+            subSection.Title = (await _context.SubSectionsMetadatasTranslations.FindAsync((int)SubSectionType.PsalmAndGospel, (int)SubSectionsMetadata.Title, LanguageId)).Text;
             subSection.Introduction = subSection.Introduction.Replace("$", evangelist);
             subSection.Readings = readings;
             return subSection;
@@ -133,7 +135,7 @@ namespace Katameros.Repositories
             var subSection = new SubSection();
             Reading reading = await MakeReading(paulineRef, ReadingType.Pauline);
             var firstPassage = reading.Passages.First();
-            var recipient = string.Concat(firstPassage.Ref.Where(char.IsLetter));
+            var recipient = string.Concat(firstPassage.BookTranslation.Where(char.IsLetter));
             reading.Introduction = reading.Introduction.Replace("$", recipient);
 
             var first = reading.Introduction.IndexOf('[');
@@ -153,6 +155,7 @@ namespace Katameros.Repositories
             }
             var output = input.Substring(0, first) + noun + input.Substring(last + 1, input.Length - 1 - last);
             reading.Introduction = output;
+            subSection.Title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Pauline, (int)ReadingsMetadata.Title, LanguageId)).Text;
             subSection.Readings = new List<Reading>() { reading };
             return subSection;
         }
@@ -161,16 +164,19 @@ namespace Katameros.Repositories
         {
             var subSection = new SubSection();
             Reading reading = await MakeReading(catholicRef, ReadingType.Catholic);
-            var author = string.Concat(reading.Passages.First().Ref.Where(char.IsLetter));
+            var author = string.Concat(reading.Passages.First().BookTranslation.Where(char.IsLetter));
             reading.Introduction = reading.Introduction.Replace("$", author);
             subSection.Readings = new List<Reading>() { reading };
+            subSection.Title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Catholic, (int)ReadingsMetadata.Title, LanguageId)).Text;
             return subSection;
         }
 
         private async Task<SubSection> MakeActs(string actsRef)
         {
+            var title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Acts, (int)ReadingsMetadata.Title, LanguageId)).Text;
             return new SubSection
             {
+                Title = title,
                 Readings = new List<Reading>() { await MakeReading(actsRef, ReadingType.Acts) }
             };
         }

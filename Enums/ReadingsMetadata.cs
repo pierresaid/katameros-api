@@ -2,7 +2,8 @@
 {
     public enum ReadingsMetadata
     {
-        Introduction = 1,
-        Conclusion = 2
+        Title = 1,
+        Introduction = 2,
+        Conclusion = 3
     }
 }
