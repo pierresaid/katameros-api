@@ -14,6 +14,8 @@ namespace Katameros
         {
             modelBuilder.Entity<BooksTranslation>()
                 .HasKey(t => new { t.BookId, t.LanguageId });
+            modelBuilder.Entity<FeastsTranslation>()
+                .HasKey(t => new { t.FeastId, t.LanguageId });
             modelBuilder.Entity<SectionsMetadatasTranslation>()
                 .HasKey(t => new { t.SectionsId, t.SectionsMetadatasId, t.LanguageId });
             modelBuilder.Entity<SubSectionsMetadatasTranslation>()
@@ -25,6 +27,8 @@ namespace Katameros
         public DbSet<Bible> Bibles { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BooksTranslation> BooksTranslations { get; set; }
+        public DbSet<Feast> Feasts { get; set; }
+        public DbSet<FeastsTranslation> FeastsTranslations { get; set; }
         public DbSet<Verse> Verses { get; set; }
         public DbSet<AnnualReading> AnnualReadings { get; set; }
         public DbSet<SundayReading> SundayReadings { get; set; }
