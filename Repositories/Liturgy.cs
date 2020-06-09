@@ -72,7 +72,8 @@ namespace Katameros.Repositories
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
             subSections.Add(await MakeActs(actsRef));
-            subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
+            if (gospelRef != null)
+                subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
 
             section.subSections = subSections;
 

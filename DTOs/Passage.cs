@@ -9,6 +9,6 @@ namespace Katameros.DTOs
         public string BookTranslation { get; set; }
         public int Chapter { get; set; }
         public string Ref { get; set; }
-        public IEnumerable<Verse> Verses { get; set; }
+        public List<Verse> Verses { get; set; }
     }
 }

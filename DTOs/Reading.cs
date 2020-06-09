@@ -7,6 +7,6 @@ namespace Katameros.DTOs
         public string Title { get; set; }
         public string Introduction { get; set; }
         public string Conclusion { get; set; }
-        public IEnumerable<Passage> Passages { get; set; }
+        public List<Passage> Passages { get; set; }
     }
 }

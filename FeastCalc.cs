@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Katameros
 {
+    /// <summary>
+    /// A Coptic Feast can be calculated from a Gregorian Date, a Coptic Date or from the days from Easter
+    /// </summary>
     class FeastCalc
     {
         public DateTime? GregorianDate { get; set; }

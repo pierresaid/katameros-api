@@ -86,7 +86,7 @@ namespace Katameros.Repositories
             var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, LanguageId)).Text;
             passage.Ref = $"{passage.Chapter}:{versesRef}";
             passage.BookTranslation = bookTranslation;
-            passage.Verses = query;
+            passage.Verses = query.ToList();
             return passage;
         }
 
@@ -174,7 +174,7 @@ namespace Katameros.Repositories
                 {
                     return await dayFeast.FeastConstructor();
                 }
-                dayReadings.Title = await GetFeastTranslation((int)dayFeast.Feast);
+                dayReadings.Title = await GetFeastTranslation(dayFeast.Feast);
             }
 
             if (lentBeginning.Ticks <= date.Ticks && date.Ticks <= lentEnding.Ticks)

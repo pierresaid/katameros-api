@@ -13,7 +13,10 @@ namespace Katameros.Repositories
         {
             var feastCalcs = new List<FeastCalc>
             {
-                new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas)
+                new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
+                new FeastCalc(Feast.Ascension, 39, null),
+                new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
+                new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
             };
             foreach (FeastCalc feastCalc in feastCalcs)
             {
@@ -26,24 +29,10 @@ namespace Katameros.Repositories
             }
             return null;
         }
-        private async Task<DayReadings> ConstructChristmas()
-        {
-            DayReadings dayReadings = new DayReadings
-            {
-                Title = await GetFeastTranslation((int)Feast.Christmas),
-                Sections = new List<Section>
-            {
-                await MakeVespers("19.72:10", "42.3:23-38"),
-                await MakeMatins("19.72:15", "43.1:14-17", null),
-                await MakeLitugy("58.1:1-14*@+58.2:1-4", "61.1:12-17", "44.13:26-33", "19.2:7-8", "40.2:1-12")
-            }
-            };
-            return dayReadings;
-        }
 
-        private async Task<string> GetFeastTranslation(int feastId)
+        private async Task<string> GetFeastTranslation(Feast feastId)
         {
-            return (await _context.FeastsTranslations.FindAsync(feastId, LanguageId)).Text;
+            return (await _context.FeastsTranslations.FindAsync((int)feastId, LanguageId)).Text;
         }
     }
 }
