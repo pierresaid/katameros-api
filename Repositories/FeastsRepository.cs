@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace Katameros.Repositories
 {
-    public partial class LectionaryRepository : ILectionaryRepository
+    public partial class FeastsRepository
     {
-        FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
+        private readonly DatabaseContext _context;
+        private readonly ReadingsRepository _readingsRepository;
+        public FeastsRepository(DatabaseContext context, ReadingsRepository readingsRepository)
+        {
+            _context = context;
+            _readingsRepository = readingsRepository;
+        }
+        public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
         {
             var feastCalcs = new List<FeastCalc>
             {
@@ -30,9 +37,9 @@ namespace Katameros.Repositories
             return null;
         }
 
-        private async Task<string> GetFeastTranslation(Feast feastId)
+        public async Task<string> GetFeastTranslation(Feast feastId)
         {
-            return (await _context.FeastsTranslations.FindAsync((int)feastId, LanguageId)).Text;
+            return (await _context.FeastsTranslations.FindAsync((int)feastId, _context.LanguageId)).Text;
         }
     }
 }

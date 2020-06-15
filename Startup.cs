@@ -35,7 +35,10 @@ namespace Katameros
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<ILectionaryRepository, LectionaryRepository>();
+            services.AddScoped<LectionaryRepository>();
+            services.AddScoped<ReadingsHelper>();
+            services.AddScoped<ReadingsRepository>();
+            services.AddScoped<FeastsRepository>();
 
             services.AddControllers();
 

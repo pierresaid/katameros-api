@@ -6,6 +6,8 @@ namespace Katameros
     public class DatabaseContext : DbContext
     {
 
+        public int BibleId { get; set; }
+        public int LanguageId { get; set; }
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }

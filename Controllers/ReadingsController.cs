@@ -12,8 +12,8 @@ namespace Katameros.Controllers
     [ApiController]
     public class ReadingsController : ControllerBase
     {
-        private readonly ILectionaryRepository _lectionaryRepository;
-        public ReadingsController(ILectionaryRepository lectionaryRepository)
+        private readonly LectionaryRepository _lectionaryRepository;
+        public ReadingsController(LectionaryRepository lectionaryRepository)
         {
             _lectionaryRepository = lectionaryRepository;
         }

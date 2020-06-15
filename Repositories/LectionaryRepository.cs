@@ -10,13 +10,27 @@ using System.Threading.Tasks;
 
 namespace Katameros.Repositories
 {
-    public partial class LectionaryRepository : ILectionaryRepository
+    public class LectionaryRepository
     {
-        private int BibleId { get; set; }
-        private int LanguageId { get; set; }
         private readonly DatabaseContext _context;
-        public LectionaryRepository(DatabaseContext context) => _context = context;
+        private readonly ReadingsRepository _readingsRepository;
+        private readonly FeastsRepository _feastsRepository;
 
+        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsRepository feastsRepository)
+        {
+            _context = context;
+            _readingsRepository = readingsRepository;
+            _feastsRepository = feastsRepository;
+        }
+
+        /// <summary>
+        /// Configure the Language and/or Bible the repository should use while fetching readings.
+        /// <br/>
+        /// The repository will configure itself to fetch the corresponding bible if the language alone is set and vice-versa.
+        /// </summary>
+        /// <param name="LanguageId">Id of the language</param>
+        /// <param name="BibleId">Id of the bible</param>
+        /// <returns>true if the language and/or the bible are found</returns>
         public async Task<bool> Configure(int languageId = -1, int bibleId = -1)
         {
             if (languageId == -1 && bibleId == -1)
@@ -24,16 +38,16 @@ namespace Katameros.Repositories
                 var bible = await _context.Bibles.FirstOrDefaultAsync();
                 if (bible == null)
                     return false;
-                BibleId = bible.Id;
-                LanguageId = bible.LanguageId;
+                _context.BibleId = bible.Id;
+                _context.LanguageId = bible.LanguageId;
             }
             else if (languageId == -1)
             {
                 var bible = await _context.Bibles.FindAsync(bibleId);
                 if (bible == null)
                     return false;
-                BibleId = bible.Id;
-                LanguageId = bible.LanguageId;
+                _context.BibleId = bible.Id;
+                _context.LanguageId = bible.LanguageId;
             }
             else if (bibleId == -1)
             {
@@ -42,8 +56,8 @@ namespace Katameros.Repositories
                 var bible = await _context.Bibles.Where(b => b.LanguageId == languageId).FirstOrDefaultAsync();
                 if (bible == null)
                     return false;
-                BibleId = bible.Id;
-                LanguageId = bible.LanguageId;
+                _context.BibleId = bible.Id;
+                _context.LanguageId = bible.LanguageId;
             }
             else
             {
@@ -51,73 +65,11 @@ namespace Katameros.Repositories
                 var bible = await _context.Bibles.FindAsync(bibleId);
                 if (bible == null || language == null)
                     return false;
-                BibleId = bibleId;
-                LanguageId = languageId;
+                _context.BibleId = bibleId;
+                _context.LanguageId = languageId;
             }
             return true;
         }
-
-        private async Task<Passage> MakePassage(string passageRef)
-        {
-            Passage passage = new Passage();
-
-            var splittedPassageRef = passageRef.Split('.', ':');
-            passage.BookId = int.Parse(splittedPassageRef[0]);
-            passage.Chapter = int.Parse(splittedPassageRef[1]);
-            List<int> splittedVersesComma = null;
-
-            var query = _context.Verses.Where(v => v.BibleId == this.BibleId && v.BookId == passage.BookId && v.Chapter == passage.Chapter);
-            string versesRef = splittedPassageRef[2];
-            if (versesRef.Contains('-'))
-            {
-                var splittedVerses = versesRef.Split('-');
-                int from = int.Parse(string.Concat(splittedVerses[0]));
-                int to = int.Parse(string.Concat(splittedVerses[1]));
-                query = query.Where(v => v.Number >= from && v.Number <= to);
-            }
-            else if (versesRef.Contains(','))
-            {
-                splittedVersesComma = versesRef.Split(',').Select(s => int.Parse(s)).ToList();
-                query = query.Where(v => splittedVersesComma.Contains(v.Number));
-            }
-            else
-            {
-                query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
-            }
-            var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, LanguageId)).Text;
-            passage.Ref = $"{passage.Chapter}:{versesRef}";
-            passage.BookTranslation = bookTranslation;
-            passage.Verses = query.ToList();
-            if (versesRef.Contains(','))
-            {
-                passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
-            }
-            return passage;
-        }
-
-        private async Task<Reading> MakeReading(string passagesRef, ReadingType readingType)
-        {
-            Reading reading = new Reading();
-            List<Passage> passages = new List<Passage>();
-            string[] passageRefs = GetRefs(passagesRef);
-
-            foreach (var passageRef in passageRefs)
-            {
-                passages.Add(await MakePassage(passageRef));
-            }
-
-            reading.Passages = passages;
-            reading.Introduction = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Introduction, LanguageId))?.Text;
-            reading.Conclusion = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Conclusion, LanguageId))?.Text;
-
-            return reading;
-        }
-
-        private string[] GetRefs(string refs)
-        {
-            return refs.Split(new string[] { "*@+", "@" }, StringSplitOptions.None);
-        }
-
 
         private async Task<Models.IReadingRefs> GetForPentecost(DateTime date, int easterDaysDiff)
         {
@@ -160,6 +112,10 @@ namespace Katameros.Repositories
             return await _context.AnnualReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == copticDate.Day).FirstAsync();
         }
 
+        /// <summary>
+        /// Returns the readings for the given date
+        /// </summary>
+        /// <param name="date">The date</param>
         public async Task<DayReadings> GetForDay(DateTime date)
         {
             DayReadings dayReadings = new DayReadings();
@@ -172,14 +128,14 @@ namespace Katameros.Repositories
             var easterDate = copticDateHelper.GetEasterDate();
             var easterDaysDiff = (date - easterDate).Days;
 
-            var dayFeast = GetDayFeast(date, copticDate, easterDaysDiff);
+            var dayFeast = _feastsRepository.GetDayFeast(date, copticDate, easterDaysDiff);
             if (dayFeast != null)
             {
                 if (dayFeast.FeastConstructor != null)
                 {
                     return await dayFeast.FeastConstructor();
                 }
-                dayReadings.Title = await GetFeastTranslation(dayFeast.Feast);
+                dayReadings.Title = await _feastsRepository.GetFeastTranslation(dayFeast.Feast);
             }
 
             if (lentBeginning.Ticks <= date.Ticks && date.Ticks <= lentEnding.Ticks)
@@ -202,9 +158,9 @@ namespace Katameros.Repositories
                 return null;
 
             if (readingRefs.V_Psalm_Ref != null)
-                sections.Add(await MakeVespers(readingRefs.V_Psalm_Ref, readingRefs.V_Gospel_Ref));
-            sections.Add(await MakeMatins(readingRefs.M_Psalm_Ref, readingRefs.M_Gospel_Ref, readingRefs.Prophecy));
-            sections.Add(await MakeLitugy(readingRefs.P_Gospel_Ref, readingRefs.C_Gospel_Ref, readingRefs.X_Gospel_Ref, readingRefs.L_Psalm_Ref, readingRefs.L_Gospel_Ref));
+                sections.Add(await _readingsRepository.MakeVespers(readingRefs.V_Psalm_Ref, readingRefs.V_Gospel_Ref));
+            sections.Add(await _readingsRepository.MakeMatins(readingRefs.M_Psalm_Ref, readingRefs.M_Gospel_Ref, readingRefs.Prophecy));
+            sections.Add(await _readingsRepository.MakeLitugy(readingRefs.P_Gospel_Ref, readingRefs.C_Gospel_Ref, readingRefs.X_Gospel_Ref, readingRefs.L_Psalm_Ref, readingRefs.L_Gospel_Ref));
 
             dayReadings.Sections = sections;
 
