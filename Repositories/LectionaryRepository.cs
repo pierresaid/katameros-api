@@ -64,6 +64,7 @@ namespace Katameros.Repositories
             var splittedPassageRef = passageRef.Split('.', ':');
             passage.BookId = int.Parse(splittedPassageRef[0]);
             passage.Chapter = int.Parse(splittedPassageRef[1]);
+            List<int> splittedVersesComma = null;
 
             var query = _context.Verses.Where(v => v.BibleId == this.BibleId && v.BookId == passage.BookId && v.Chapter == passage.Chapter);
             string versesRef = splittedPassageRef[2];
@@ -76,8 +77,8 @@ namespace Katameros.Repositories
             }
             else if (versesRef.Contains(','))
             {
-                var splittedVerses = versesRef.Split(',').Select(s => int.Parse(s)).ToArray();
-                query = query.Where(v => splittedVerses.Contains(v.Number));
+                splittedVersesComma = versesRef.Split(',').Select(s => int.Parse(s)).ToList();
+                query = query.Where(v => splittedVersesComma.Contains(v.Number));
             }
             else
             {
@@ -87,6 +88,10 @@ namespace Katameros.Repositories
             passage.Ref = $"{passage.Chapter}:{versesRef}";
             passage.BookTranslation = bookTranslation;
             passage.Verses = query.ToList();
+            if (versesRef.Contains(','))
+            {
+                passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
+            }
             return passage;
         }
 
