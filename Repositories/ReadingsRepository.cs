@@ -101,6 +101,8 @@ namespace Katameros.Repositories
             if (psalmRef != null)
                 readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
             Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
+            if (psalmRef == null)
+                gospel.Introduction = null;
             readings.Add(gospel);
             var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
             subSection.Title = (await _context.SubSectionsMetadatasTranslations.FindAsync((int)SubSectionType.PsalmAndGospel, (int)SubSectionsMetadata.Title, _context.LanguageId)).Text;
