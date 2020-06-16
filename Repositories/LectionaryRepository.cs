@@ -97,10 +97,15 @@ namespace Katameros.Repositories
         private async Task<Models.IReadingRefs> GetForSunday(LocalDate copticDate)
         {
             Models.IReadingRefs readingRefs;
-            var nbSunday = copticDate.Day / 7;
+            int i = 0;
+            int nbSunday = 0;
 
-            if (nbSunday == 0)
-                nbSunday = 1;
+            while (i < copticDate.Day)
+            {
+                if (copticDate.PlusDays(i).DayOfWeek == IsoDayOfWeek.Sunday)
+                    nbSunday += 1;
+                ++i;
+            }
 
             readingRefs = await _context.SundayReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == nbSunday).FirstOrDefaultAsync();
 
