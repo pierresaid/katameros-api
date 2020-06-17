@@ -20,11 +20,11 @@ namespace Katameros.Controllers
 
         [HttpGet]
         [Route("gregorian/{date}")]
-        public async Task<DayReadings> GetFromGregorianDate(string date)
+        public async Task<DayReadings> GetFromGregorianDate(string date, int languageId = -1, int bibleId = -1)
         {
             DateTime parsedDate = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
-            await _lectionaryRepository.Configure();
+            await _lectionaryRepository.Configure(languageId, bibleId);
             var res = await _lectionaryRepository.GetForDay(parsedDate);
 
             return res;

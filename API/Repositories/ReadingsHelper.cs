@@ -39,7 +39,7 @@ namespace Katameros.Repositories
             {
                 query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
             }
-            var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId)).Text;
+            var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
             passage.Ref = $"{passage.Chapter}:{versesRef}";
             passage.BookTranslation = bookTranslation;
             passage.Verses = query.ToList();

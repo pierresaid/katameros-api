@@ -39,7 +39,7 @@ namespace Katameros.Repositories
 
         public async Task<string> GetFeastTranslation(Feast feastId)
         {
-            return (await _context.FeastsTranslations.FindAsync((int)feastId, _context.LanguageId)).Text;
+            return (await _context.FeastsTranslations.FindAsync((int)feastId, _context.LanguageId))?.Text;
         }
     }
 }
