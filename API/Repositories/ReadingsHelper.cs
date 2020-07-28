@@ -72,5 +72,20 @@ namespace Katameros.Repositories
         {
             return refs.Split(new string[] { "*@+", "@" }, StringSplitOptions.None);
         }
+
+        public async Task<string> GetSectionMeta(SectionType sectionType, SectionsMetadata sectionsMetadata)
+        {
+            return (await _context.SectionsMetadatasTranslations.FindAsync((int)sectionType, (int)sectionsMetadata, _context.LanguageId))?.Text;
+        }
+
+        public async Task<string> GetSubSectionMeta(SubSectionType subSectionType, SubSectionsMetadata subSectionsMetadata)
+        {
+            return (await _context.SubSectionsMetadatasTranslations.FindAsync((int)subSectionType, (int)subSectionsMetadata, _context.LanguageId))?.Text;
+        }
+
+        public async Task<string> GetReadingMeta(ReadingType readingType, ReadingsMetadata readingsMetadata)
+        {
+            return (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)readingsMetadata, _context.LanguageId))?.Text;
+        }
     }
 }

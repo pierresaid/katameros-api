@@ -50,7 +50,7 @@ namespace Katameros.Repositories
                 var output = input.Substring(0, first) + noun + input.Substring(last + 1, input.Length - 1 - last);
                 reading.Introduction = output;
             }
-            subSection.Title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Pauline, (int)ReadingsMetadata.Title, _context.LanguageId))?.Text;
+            subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Pauline, ReadingsMetadata.Title);
             subSection.Readings = new List<Reading>() { reading };
             return subSection;
         }
@@ -62,16 +62,15 @@ namespace Katameros.Repositories
             var author = string.Concat(reading.Passages.First().BookTranslation.Where(char.IsLetter));
             reading.Introduction = reading.Introduction?.Replace("$", author);
             subSection.Readings = new List<Reading>() { reading };
-            subSection.Title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Catholic, (int)ReadingsMetadata.Title, _context.LanguageId))?.Text;
+            subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Catholic, ReadingsMetadata.Title);
             return subSection;
         }
 
         private async Task<SubSection> MakeActs(string actsRef)
         {
-            var title = (await _context.ReadingsMetadatasTranslations.FindAsync((int)ReadingType.Acts, (int)ReadingsMetadata.Title, _context.LanguageId))?.Text;
             return new SubSection
             {
-                Title = title,
+                Title = await _readingsHelper.GetReadingMeta(ReadingType.Acts, ReadingsMetadata.Title),
                 Readings = new List<Reading>() { await _readingsHelper.MakeReading(actsRef, ReadingType.Acts) }
             };
         }
@@ -81,7 +80,7 @@ namespace Katameros.Repositories
             var section = new Section();
             var subSections = new List<SubSection>();
 
-            section.Title = (await _context.SectionsMetadatasTranslations.FindAsync((int)SectionType.Liturgy, (int)SectionsMetadata.Title, _context.LanguageId))?.Text;
+            section.Title = await _readingsHelper.GetSectionMeta(SectionType.Liturgy, SectionsMetadata.Title);
 
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
@@ -101,7 +100,7 @@ namespace Katameros.Repositories
             SubSection subSection = new SubSection();
             List<Reading> readings = new List<Reading>();
 
-            subSection.Introduction = (await _context.SubSectionsMetadatasTranslations.FindAsync((int)SubSectionType.PsalmAndGospel, (int)SubSectionsMetadata.Introduction, _context.LanguageId))?.Text;
+            subSection.Introduction = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Introduction);
             if (psalmRef != null)
                 readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
             Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
@@ -109,7 +108,7 @@ namespace Katameros.Repositories
                 gospel.Introduction = null;
             readings.Add(gospel);
             var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
-            subSection.Title = (await _context.SubSectionsMetadatasTranslations.FindAsync((int)SubSectionType.PsalmAndGospel, (int)SubSectionsMetadata.Title, _context.LanguageId))?.Text;
+            subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
             subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
             subSection.Readings = readings;
             return subSection;
@@ -134,8 +133,8 @@ namespace Katameros.Repositories
         }
         #endregion
 
-        #region Prohpecies
-        private async Task<SubSection> MakeProphecies(string prophecyRef)
+        #region Prophecies
+        public async Task<SubSection> MakeProphecies(string prophecyRef)
         {
             var subSection = new SubSection();
             var readings = new List<Reading>();
@@ -153,6 +152,21 @@ namespace Katameros.Repositories
 
             subSection.Readings = readings;
 
+            return subSection;
+        }
+        #endregion
+
+        #region OldTestament
+        public async Task<SubSection> MakeOldTestament(string passageRef)
+        {
+            var subSection = new SubSection();
+            var readings = new List<Reading>();
+            
+            Reading reading = await _readingsHelper.MakeReading(passageRef, ReadingType.Prophecy);
+            reading.Conclusion = await _readingsHelper.GetReadingMeta(ReadingType.Prophecy, ReadingsMetadata.Conclusion);
+            readings.Add(reading);
+
+            subSection.Readings = readings;
             return subSection;
         }
         #endregion
