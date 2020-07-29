@@ -11,10 +11,13 @@ namespace Katameros.Repositories
     {
         private readonly DatabaseContext _context;
         private readonly ReadingsRepository _readingsRepository;
-        public FeastsRepository(DatabaseContext context, ReadingsRepository readingsRepository)
+        private readonly ReadingsHelper _readingsHelper;
+
+        public FeastsRepository(DatabaseContext context, ReadingsRepository readingsRepository, ReadingsHelper readingsHelper)
         {
             _context = context;
             _readingsRepository = readingsRepository;
+            _readingsHelper = readingsHelper;
         }
         public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
         {
@@ -24,6 +27,7 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.Ascension, 39, null),
                 new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
                 new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
+                new FeastCalc(Feast.PalmSunday, -6, ConstructPaschaMonday),
             };
             foreach (FeastCalc feastCalc in feastCalcs)
             {

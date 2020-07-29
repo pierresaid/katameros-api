@@ -6,6 +6,11 @@
         Christmas = 1,
         Ascension = 2,
         LazarusSaturday = 3,
-        PalmSunday = 4
+        PalmSunday = 4,
+        PaschaMonday = 5,
+        PaschaTuesday = 6,
+        PaschaWednesday = 7,
+        PaschaThursday = 8,
+        PaschaFriday = 9
     }
 }
