@@ -56,7 +56,7 @@ namespace Katameros.Repositories
                     Title = await _readingsHelper.GetSectionMeta(SectionType.EleventhHour, SectionsMetadata.Title),
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("23.50:1-3"),
-                        await _readingsRepository.MakeOldTestament("72.1:20-30"),
+                        await _readingsRepository.MakeOldTestament("73.1:20-30"),
                         await _readingsRepository.MakePsalmAndGospel("19.13:4-5", "43.8:51-59"),
                     }
                 }
