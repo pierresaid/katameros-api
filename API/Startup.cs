@@ -28,7 +28,7 @@ namespace Katameros
 #if DEBUG
                     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 #else
-                    builder.WithOrigins("https://katameros.netlify.app").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("https://katameros.app", "https://katameros.netlify.app").AllowAnyHeader().AllowAnyMethod();
 #endif
                 });
             });
