@@ -13,6 +13,7 @@
         PaschaThursday = 8,
         PaschaFriday = 9,
         TempleEntrance = 10,
-        EgyptEntrance = 11
+        EgyptEntrance = 11,
+        Annunciation = 12
     }
 }
