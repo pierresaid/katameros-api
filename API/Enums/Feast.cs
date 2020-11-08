@@ -11,6 +11,7 @@
         PaschaTuesday = 6,
         PaschaWednesday = 7,
         PaschaThursday = 8,
-        PaschaFriday = 9
+        PaschaFriday = 9,
+        TempleEntrance = 10
     }
 }
