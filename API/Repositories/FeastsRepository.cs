@@ -26,7 +26,8 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
                 new FeastCalc(Feast.Ascension, 39, null),
                 new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
-                new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, 8, CalendarSystem.Coptic), ConstructTempleEntrance),
+                new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, CopticMonths.Baramoudah, CalendarSystem.Coptic), ConstructTempleEntrance),
+                new FeastCalc(Feast.EgyptEntrance, new LocalDate(1, CopticMonths.Bashans, 24, CalendarSystem.Coptic), ConstructEgyptEntrance),
                 new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
                 new FeastCalc(Feast.PaschaMonday, -6, ConstructPaschaMonday),
             };
