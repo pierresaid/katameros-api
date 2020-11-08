@@ -15,6 +15,8 @@
         TempleEntrance = 10,
         EgyptEntrance = 11,
         Annunciation = 12,
-        Cross = 13
+        Cross = 13,
+        FastOfNinevah = 14,
+        Jonas = 15
     }
 }

@@ -31,6 +31,10 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.Annunciation, new LocalDate(1, CopticMonths.Baramhat, 29, CalendarSystem.Coptic), ConstructAnnunciation),
                 new FeastCalc(Feast.Cross, new LocalDate(1, CopticMonths.Baramhat, 10, CalendarSystem.Coptic), ConstructFeastOfTheCross),
                 new FeastCalc(Feast.Cross, new LocalDate(1, CopticMonths.Thout, 17, CalendarSystem.Coptic), ConstructFeastOfTheCross),
+                new FeastCalc(Feast.FastOfNinevah, -69, ConstructFastOfNinevah1),
+                new FeastCalc(Feast.FastOfNinevah, -68, ConstructFastOfNinevah2),
+                new FeastCalc(Feast.FastOfNinevah, -67, ConstructFastOfNinevah3),
+                new FeastCalc(Feast.Jonas, -66, ConstructFeastOfJonas),
                 new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
                 new FeastCalc(Feast.PaschaMonday, -6, ConstructPaschaMonday),
             };

@@ -116,7 +116,7 @@ namespace Katameros.Repositories
         #endregion
 
         #region Matins
-        public async Task<Section> MakeMatins(string psalmRef, string gospelRef, string prophecyRef)
+        public async Task<Section> MakeMatins(string psalmRef, string gospelRef, string prophecyRef = null)
         {
             var section = new Section();
             var subSections = new List<SubSection>();
@@ -172,12 +172,16 @@ namespace Katameros.Repositories
         #endregion
 
         #region Vespers
-        public async Task<Section> MakeVespers(string psalmRef, string gospelRef)
+        public async Task<Section> MakeVespers(string psalmRef, string gospelRef, string prophecyRef = null)
         {
             var section = new Section();
             var subSections = new List<SubSection>();
 
             section.Title = (await _context.SectionsMetadatasTranslations.FindAsync((int)SectionType.Vespers, (int)SectionsMetadata.Title, _context.LanguageId))?.Text;
+
+            if (prophecyRef != null)
+                subSections.Add(await MakeProphecies(prophecyRef));
+
             subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
             section.subSections = subSections;
 
