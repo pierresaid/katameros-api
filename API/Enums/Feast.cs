@@ -14,6 +14,7 @@
         PaschaFriday = 9,
         TempleEntrance = 10,
         EgyptEntrance = 11,
-        Annunciation = 12
+        Annunciation = 12,
+        Cross = 13
     }
 }
