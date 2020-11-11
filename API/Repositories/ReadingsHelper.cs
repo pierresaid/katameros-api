@@ -87,5 +87,10 @@ namespace Katameros.Repositories
         {
             return (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)readingsMetadata, _context.LanguageId))?.Text;
         }
+
+        public async Task<string> GetSentence(Sentence sentenceType)
+        {
+            return (await _context.SentencesTranslations.FindAsync((int)sentenceType, _context.LanguageId))?.Text;
+        }
     }
 }

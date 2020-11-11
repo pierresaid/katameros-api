@@ -24,6 +24,8 @@ namespace Katameros
                 .HasKey(t => new { t.SubSectionsId, t.SubSectionsMetadatasId, t.LanguageId });
             modelBuilder.Entity<ReadingsMetadatasTranslation>()
                 .HasKey(t => new { t.ReadingId, t.ReadingsMetadatasId, t.LanguageId });
+            modelBuilder.Entity<SentencesTranslation>()
+                .HasKey(t => new { t.SentenceId, t.LanguageId });
         }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Bible> Bibles { get; set; }
@@ -45,5 +47,7 @@ namespace Katameros
         public DbSet<Reading> Readings { get; set; }
         public DbSet<ReadingsMetadata> ReadingsMetadatas { get; set; }
         public DbSet<ReadingsMetadatasTranslation> ReadingsMetadatasTranslations { get; set; }
+        public DbSet<Sentences> Sentences { get; set; }
+        public DbSet<SentencesTranslation> SentencesTranslations { get; set; }
     }
 }
