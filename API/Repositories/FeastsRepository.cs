@@ -37,6 +37,7 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.Jonas, -66, ConstructFeastOfJonas),
                 new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
                 new FeastCalc(Feast.PaschaMonday, -6, ConstructPaschaMonday),
+                new FeastCalc(Feast.PaschaTuesday, -5, ConstructPaschaTuesday),
             };
             foreach (FeastCalc feastCalc in feastCalcs)
             {

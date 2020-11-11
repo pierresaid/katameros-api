@@ -20,7 +20,7 @@ namespace Katameros.Repositories
             var EleventhHour = await _readingsHelper.GetSectionMeta(SectionType.EleventhHour, SectionsMetadata.Title);
 
             var EveOf = await _readingsHelper.GetSentence(Sentence.EveOf);
-            var Tuesday = await GetFeastTranslation(Feast.PaschaTuesday);
+            var NextDay = await GetFeastTranslation(Feast.PaschaTuesday);
 
             dayReadings.Sections = new List<Section>() {
                 new Section
@@ -72,7 +72,7 @@ namespace Katameros.Repositories
                 },
                 new Section
                 {
-                    Title = $"{FirstHour} {EveOf} {Tuesday}",
+                    Title = $"{FirstHour} {EveOf} {NextDay}",
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("38.1:1-6"),
                         await _readingsRepository.MakePsalmAndGospel("19.62:7,6", "42.13:23-30"),
@@ -80,7 +80,7 @@ namespace Katameros.Repositories
                 },
                 new Section
                 {
-                    Title = $"{ThirdHour} {EveOf} {Tuesday}",
+                    Title = $"{ThirdHour} {EveOf} {NextDay}",
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("39.1:1-9"),
                         await _readingsRepository.MakePsalmAndGospel("19.13:3,5", "42.13:31-35"),
@@ -88,7 +88,7 @@ namespace Katameros.Repositories
                 },
                 new Section
                 {
-                    Title = $"{SixthHour} {EveOf} {Tuesday}",
+                    Title = $"{SixthHour} {EveOf} {NextDay}",
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("28.4:15-19*@+28.5:1-7"),
                         await _readingsRepository.MakePsalmAndGospel("19.91:2,3", "42.21:34-38"),
@@ -96,7 +96,7 @@ namespace Katameros.Repositories
                 },
                 new Section
                 {
-                    Title = $"{NinthHour} {EveOf} {Tuesday}",
+                    Title = $"{NinthHour} {EveOf} {NextDay}",
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("28.10:12-15*@+28.11:1-2"),
                         await _readingsRepository.MakePsalmAndGospel("19.33:10,11", "42.11:37-52"),
@@ -104,7 +104,7 @@ namespace Katameros.Repositories
                 },
                 new Section
                 {
-                    Title = $"{EleventhHour} {EveOf} {Tuesday}",
+                    Title = $"{EleventhHour} {EveOf} {NextDay}",
                     subSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("30.5:6-14"),
                         await _readingsRepository.MakePsalmAndGospel("19.122:4", "41.13:32-37*@+41.14:1-2"),
