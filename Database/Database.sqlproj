@@ -80,5 +80,7 @@
     <Build Include="dbo\Tables\Books.sql" />
     <Build Include="dbo\Tables\Bibles.sql" />
     <Build Include="dbo\Tables\AnnualReadings.sql" />
+    <Build Include="dbo\Tables\SentencesTranslations.sql" />
+    <Build Include="dbo\Tables\Sentences.sql" />
   </ItemGroup>
 </Project>
