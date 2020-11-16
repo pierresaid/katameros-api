@@ -14,9 +14,9 @@ namespace Katameros.Repositories
     {
         private readonly DatabaseContext _context;
         private readonly ReadingsRepository _readingsRepository;
-        private readonly FeastsRepository _feastsRepository;
+        private readonly FeastsFactory _feastsRepository;
 
-        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsRepository feastsRepository)
+        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsFactory feastsRepository)
         {
             _context = context;
             _readingsRepository = readingsRepository;

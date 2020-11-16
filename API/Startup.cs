@@ -38,7 +38,7 @@ namespace Katameros
             services.AddScoped<LectionaryRepository>();
             services.AddScoped<ReadingsHelper>();
             services.AddScoped<ReadingsRepository>();
-            services.AddScoped<FeastsRepository>();
+            services.AddScoped<FeastsFactory>();
 
             services.AddControllers();
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Katameros.Repositories
 {
-    public partial class FeastsRepository
+    public partial class FeastsFactory
     {
         private async Task<DayReadings> ConstructFastOfNinevah1()
         {
