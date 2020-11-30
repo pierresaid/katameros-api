@@ -75,13 +75,19 @@ namespace Katameros.Repositories
         {
             var first = Introduction.IndexOf('[');
             var last = lastIndex != -1 ? lastIndex : Introduction.LastIndexOf(']');
+            if (first == -1 || last == - 1)
+            {
+                return Introduction;
+            }
 
             Regex regex = new Regex("(?<=\\[).*?(?=\\])");
             var matches = regex.Matches(Introduction);
 
-            var firstEpistle = matches[0]?.Value;
-            var secondEpistle = matches[1]?.Value;
-            var thirdEpistle = matches[2]?.Value;
+            int matchesCount = matches.Count;
+
+            var firstEpistle = matchesCount >= 1 ? matches[0]?.Value : null;
+            var secondEpistle = matchesCount >= 2 ? matches[1]?.Value : null;
+            var thirdEpistle = matchesCount >= 3 ? matches[2]?.Value : null;
 
             var input = Introduction;
             var epistleNumber = "";
