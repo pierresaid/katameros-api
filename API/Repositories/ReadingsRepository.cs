@@ -31,6 +31,8 @@ namespace Katameros.Repositories
             {
                 reading.Introduction = reading.Introduction.Replace("$", recipient);
 
+                reading.Introduction = NumeriseEpistle(reading.Introduction, firstPassage, reading.Introduction.IndexOf("] "));
+
                 var first = reading.Introduction.IndexOf('[');
                 var last = reading.Introduction.LastIndexOf(']');
 
@@ -42,8 +44,8 @@ namespace Katameros.Repositories
 
                 var input = reading.Introduction;
                 var noun = plural;
-                // Titus, Philemon, James
-                if (new[] { 56, 57, 59 }.Contains(firstPassage.BookId))
+                // Titus, Philemon, James, Timothy
+                if (new[] { 56, 57, 59, 55 }.Contains(firstPassage.BookId))
                 {
                     noun = singular;
                 }
@@ -59,11 +61,45 @@ namespace Katameros.Repositories
         {
             var subSection = new SubSection();
             Reading reading = await _readingsHelper.MakeReading(catholicRef, ReadingType.Catholic);
-            var author = string.Concat(reading.Passages.First().BookTranslation.Where(char.IsLetter));
+            var firstPassage = reading.Passages.First();
+            var author = string.Concat(firstPassage.BookTranslation.Where(char.IsLetter));
             reading.Introduction = reading.Introduction?.Replace("$", author);
+            reading.Introduction = NumeriseEpistle(reading.Introduction, firstPassage);
+
             subSection.Readings = new List<Reading>() { reading };
             subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Catholic, ReadingsMetadata.Title);
             return subSection;
+        }
+
+        private string NumeriseEpistle(string Introduction, Passage firstPassage, int lastIndex = -1)
+        {
+            var first = Introduction.IndexOf('[');
+            var last = lastIndex != -1 ? lastIndex : Introduction.LastIndexOf(']');
+
+            Regex regex = new Regex("(?<=\\[).*?(?=\\])");
+            var matches = regex.Matches(Introduction);
+
+            var firstEpistle = matches[0]?.Value;
+            var secondEpistle = matches[1]?.Value;
+            var thirdEpistle = matches[2]?.Value;
+
+            var input = Introduction;
+            var epistleNumber = "";
+            // First Corinthians, First Thessalonians, First Timothy, First Peter, First John
+            if (new[] { 46, 52, 54, 60, 62 }.Contains(firstPassage.BookId))
+            {
+                epistleNumber = firstEpistle;
+            }
+            else if (new[] { 47, 53, 55, 61, 63 }.Contains(firstPassage.BookId)) // Second Corinthians, Second Thessalonians, Second Timothy, Second Peter, Second John
+            {
+                epistleNumber = secondEpistle;
+            }
+            else if (firstPassage.BookId == 64) // Third John
+            {
+                epistleNumber = thirdEpistle;
+            }
+            var output = input.Substring(0, first) + epistleNumber + input.Substring(last + 1, input.Length - 1 - last);
+            return output;
         }
 
         private async Task<SubSection> MakeActs(string actsRef)
@@ -104,10 +140,14 @@ namespace Katameros.Repositories
             if (psalmRef != null)
                 readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
             Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
+            var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
             if (psalmRef == null)
                 gospel.Introduction = null;
+            else if (gospel.Introduction.Contains("$"))
+            {
+                gospel.Introduction = gospel.Introduction.Replace("$", evangelist);
+            }
             readings.Add(gospel);
-            var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
             subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
             subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
             subSection.Readings = readings;
@@ -161,7 +201,7 @@ namespace Katameros.Repositories
         {
             var subSection = new SubSection();
             var readings = new List<Reading>();
-            
+
             Reading reading = await _readingsHelper.MakeReading(passageRef, ReadingType.Prophecy);
             reading.Conclusion = await _readingsHelper.GetReadingMeta(ReadingType.Prophecy, ReadingsMetadata.Conclusion);
             readings.Add(reading);
