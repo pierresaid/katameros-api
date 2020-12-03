@@ -36,21 +36,24 @@ namespace Katameros.Repositories
                 var first = reading.Introduction.IndexOf('[');
                 var last = reading.Introduction.LastIndexOf(']');
 
-                Regex regex = new Regex("(?<=\\[).*?(?=\\])");
-                var matches = regex.Matches(reading.Introduction);
-
-                var singular = matches[0].Value;
-                var plural = matches[1].Value;
-
-                var input = reading.Introduction;
-                var noun = plural;
-                // Titus, Philemon, James, Timothy
-                if (new[] { 56, 57, 59, 55 }.Contains(firstPassage.BookId))
+                if (first != -1 && last != -1)
                 {
-                    noun = singular;
+                    Regex regex = new Regex("(?<=\\[).*?(?=\\])");
+                    var matches = regex.Matches(reading.Introduction);
+
+                    var singular = matches[0].Value;
+                    var plural = matches[1].Value;
+
+                    var input = reading.Introduction;
+                    var noun = plural;
+                    // Titus, Philemon, James, Timothy
+                    if (new[] { 56, 57, 59, 55 }.Contains(firstPassage.BookId))
+                    {
+                        noun = singular;
+                    }
+                    var output = input.Substring(0, first) + noun + input.Substring(last + 1, input.Length - 1 - last);
+                    reading.Introduction = output;
                 }
-                var output = input.Substring(0, first) + noun + input.Substring(last + 1, input.Length - 1 - last);
-                reading.Introduction = output;
             }
             subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Pauline, ReadingsMetadata.Title);
             subSection.Readings = new List<Reading>() { reading };
@@ -75,7 +78,7 @@ namespace Katameros.Repositories
         {
             var first = Introduction.IndexOf('[');
             var last = lastIndex != -1 ? lastIndex : Introduction.LastIndexOf(']');
-            if (first == -1 || last == - 1)
+            if (first == -1 || last == -1)
             {
                 return Introduction;
             }
