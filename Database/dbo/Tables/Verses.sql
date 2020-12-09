@@ -12,3 +12,10 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Verses_Bible_Book_Chapter_Number]
+    ON [dbo].[Verses]([BibleId] ASC, [BookId] ASC, [Chapter] ASC, [Number] ASC);
+
