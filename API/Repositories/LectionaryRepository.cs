@@ -14,13 +14,13 @@ namespace Katameros.Repositories
     {
         private readonly DatabaseContext _context;
         private readonly ReadingsRepository _readingsRepository;
-        private readonly FeastsFactory _feastsRepository;
+        private readonly FeastsFactory _feastsFactory;
 
-        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsFactory feastsRepository)
+        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsFactory feastsFactory)
         {
             _context = context;
             _readingsRepository = readingsRepository;
-            _feastsRepository = feastsRepository;
+            _feastsFactory = feastsFactory;
         }
 
         /// <summary>
@@ -132,15 +132,15 @@ namespace Katameros.Repositories
             var (lentBeginning, lentEnding) = copticDateHelper.GetGreatLentPeriod();
             var easterDate = copticDateHelper.GetEasterDate();
             var easterDaysDiff = (date - easterDate).Days;
-
-            var dayFeast = _feastsRepository.GetDayFeast(date, copticDate, easterDaysDiff);
+            
+            var dayFeast = _feastsFactory.GetDayFeast(date, copticDate, easterDaysDiff);
             if (dayFeast != null)
             {
                 if (dayFeast.FeastConstructor != null)
                 {
                     return await dayFeast.FeastConstructor();
                 }
-                dayReadings.Title = await _feastsRepository.GetFeastTranslation(dayFeast.Feast);
+                dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
             }
 
             if (lentBeginning.Ticks <= date.Ticks && date.Ticks <= lentEnding.Ticks)
@@ -150,6 +150,10 @@ namespace Katameros.Repositories
             else if (easterDaysDiff > 0 && easterDaysDiff <= 49)
             {
                 readingRefs = await GetForPentecost(date, easterDaysDiff);
+            }
+            else if (copticDate.Day == 29 && copticDate.Month != CopticMonths.Amshir && copticDate.Month != CopticMonths.Toubah)
+            {
+                return await _feastsFactory.Construct29OfMonth();
             }
             else if (date.DayOfWeek == DayOfWeek.Sunday)
             {
