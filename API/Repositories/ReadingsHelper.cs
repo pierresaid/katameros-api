@@ -52,7 +52,7 @@ namespace Katameros.Repositories
 
         public async Task<Reading> MakeReading(string passagesRef, ReadingType readingType)
         {
-            Reading reading = new Reading();
+            Reading reading = new Reading(readingType);
             List<Passage> passages = new List<Passage>();
             string[] passageRefs = GetRefs(passagesRef);
 
