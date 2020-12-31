@@ -1,5 +1,7 @@
-﻿using Katameros.DTOs;
+﻿using Helpers.Katameros;
+using Katameros.DTOs;
 using Katameros.Enums;
+using Katameros.Factories;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using System;
@@ -15,12 +17,14 @@ namespace Katameros.Repositories
         private readonly DatabaseContext _context;
         private readonly ReadingsRepository _readingsRepository;
         private readonly FeastsFactory _feastsFactory;
+        private readonly SpecialCaseFactory _specialCaseFactory;
 
-        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsFactory feastsFactory)
+        public LectionaryRepository(DatabaseContext context, ReadingsRepository readingsRepository, FeastsFactory feastsFactory, SpecialCaseFactory specialCaseFactory)
         {
             _context = context;
             _readingsRepository = readingsRepository;
             _feastsFactory = feastsFactory;
+            _specialCaseFactory = specialCaseFactory;
         }
 
         /// <summary>
@@ -71,107 +75,57 @@ namespace Katameros.Repositories
             return true;
         }
 
-        private async Task<Models.IReadingRefs> GetForPentecost(DateTime date, int easterDaysDiff)
-        {
-            Models.IReadingRefs readingRefs;
-
-            var dayNumber = date.DayOfWeek;
-            var weekNumber = (easterDaysDiff / 7) + 1 - (dayNumber == DayOfWeek.Sunday ? 1 : 0);
-
-            readingRefs = await _context.PentecostReadings.Where(ar => ar.Week == weekNumber && ar.DayOfWeek == (int)dayNumber).FirstAsync();
-
-            return readingRefs;
-        }
-
-        private async Task<Models.IReadingRefs> GetForGreatLent(DateTime date, DateTime lentBeginning)
-        {
-            Models.IReadingRefs readingRefs;
-            int weekNumber = ((date - lentBeginning).Days / 7) + 1;
-            int dayNumber = (int)date.DayOfWeek;
-
-            readingRefs = await _context.GreatLentReadings.Where(ar => ar.Week == weekNumber && ar.DayOfWeek == dayNumber).FirstAsync();
-
-            return readingRefs;
-        }
-
-        private async Task<Models.IReadingRefs> GetForSunday(LocalDate copticDate)
-        {
-            Models.IReadingRefs readingRefs;
-            int i = 0;
-            int nbSunday = 0;
-
-            while (i < copticDate.Day)
-            {
-                if (copticDate.PlusDays(i).DayOfWeek == IsoDayOfWeek.Sunday)
-                    nbSunday += 1;
-                ++i;
-            }
-
-            readingRefs = await _context.SundayReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == nbSunday).FirstOrDefaultAsync();
-
-            return readingRefs;
-        }
-
-        private async Task<Models.IReadingRefs> GetForAnnual(LocalDate copticDate)
-        {
-            return await _context.AnnualReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == copticDate.Day).FirstAsync();
-        }
-
         /// <summary>
         /// Returns the readings for the given date
         /// </summary>
-        /// <param name="date">The date</param>
-        public async Task<DayReadings> GetForDay(DateTime date)
+        /// <param name="gregorianDate">The date</param>
+        public async Task<DayReadings> GetForDay(DateTime gregorianDate)
         {
-            DayReadings dayReadings = new DayReadings();
-            var sections = new List<Section>();
             Models.IReadingRefs readingRefs;
-            CopticDateHelper copticDateHelper = new CopticDateHelper(date);
+            CopticDateHelper copticDateHelper = new CopticDateHelper(gregorianDate);
 
             var copticDate = copticDateHelper.ToCopticDate();
             var (lentBeginning, lentEnding) = copticDateHelper.GetGreatLentPeriod();
             var easterDate = copticDateHelper.GetEasterDate();
-            var easterDaysDiff = (date - easterDate).Days;
-            
-            var dayFeast = _feastsFactory.GetDayFeast(date, copticDate, easterDaysDiff);
+            var easterDaysDiff = (gregorianDate - easterDate).Days;
+
+            var specialCaseReadings = await _specialCaseFactory.HasSpecialCase(gregorianDate, copticDate, easterDaysDiff);
+            if (specialCaseReadings != null)
+                return specialCaseReadings;
+
+            var dayFeast = _feastsFactory.GetDayFeast(gregorianDate, copticDate, easterDaysDiff);
             if (dayFeast != null)
             {
                 if (dayFeast.FeastConstructor != null)
-                {
                     return await dayFeast.FeastConstructor();
-                }
-                dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
             }
 
-            if (lentBeginning.Ticks <= date.Ticks && date.Ticks <= lentEnding.Ticks)
+            if (lentBeginning.Ticks <= gregorianDate.Ticks && gregorianDate.Ticks <= lentEnding.Ticks)
             {
-                readingRefs = await GetForGreatLent(date, lentBeginning);
+                readingRefs = await _readingsRepository.GetGreatLentReadingsRef(gregorianDate, lentBeginning);
             }
             else if (easterDaysDiff > 0 && easterDaysDiff <= 49)
             {
-                readingRefs = await GetForPentecost(date, easterDaysDiff);
+                readingRefs = await _readingsRepository.GePentecostReadingsRef(gregorianDate, easterDaysDiff);
             }
             else if (copticDate.Day == 29 && copticDate.Month != CopticMonths.Amshir && copticDate.Month != CopticMonths.Toubah)
             {
                 return await _feastsFactory.Construct29OfMonth();
             }
-            else if (date.DayOfWeek == DayOfWeek.Sunday)
+            else if (gregorianDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                readingRefs = await GetForSunday(copticDate);
+                readingRefs = await _readingsRepository.GetSundayReadingsRef(copticDate);
             }
             else
             {
-                readingRefs = await GetForAnnual(copticDate);
+                readingRefs = await _readingsRepository.GetAnnualReadingsRef(copticDate);
             }
             if (readingRefs == null)
                 return null;
 
-            if (readingRefs.V_Psalm_Ref != null)
-                sections.Add(await _readingsRepository.MakeVespers(readingRefs.V_Psalm_Ref, readingRefs.V_Gospel_Ref));
-            sections.Add(await _readingsRepository.MakeMatins(readingRefs.M_Psalm_Ref, readingRefs.M_Gospel_Ref, readingRefs.Prophecy));
-            sections.Add(await _readingsRepository.MakeLitugy(readingRefs.P_Gospel_Ref, readingRefs.C_Gospel_Ref, readingRefs.X_Gospel_Ref, readingRefs.L_Psalm_Ref, readingRefs.L_Gospel_Ref));
-
-            dayReadings.Sections = sections;
+            DayReadings dayReadings = await _readingsRepository.GetFromRef(readingRefs);
+            if (dayFeast != null)
+                dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
 
             return dayReadings;
         }

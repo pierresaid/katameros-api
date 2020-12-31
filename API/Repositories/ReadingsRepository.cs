@@ -1,5 +1,7 @@
 ﻿using Katameros.DTOs;
 using Katameros.Enums;
+using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,77 @@ namespace Katameros.Repositories
             _context = context;
             _readingsHelper = readingsHelper;
         }
+
+        #region PeriodsReadingsRef
+        public async Task<Models.IReadingRefs> GePentecostReadingsRef(DateTime date, int easterDaysDiff)
+        {
+            Models.IReadingRefs readingRefs;
+
+            var dayNumber = date.DayOfWeek;
+            var weekNumber = (easterDaysDiff / 7) + 1 - (dayNumber == DayOfWeek.Sunday ? 1 : 0);
+
+            readingRefs = await _context.PentecostReadings.Where(ar => ar.Week == weekNumber && ar.DayOfWeek == (int)dayNumber).FirstAsync();
+
+            return readingRefs;
+        }
+
+        public async Task<Models.IReadingRefs> GetGreatLentReadingsRef(DateTime date, DateTime lentBeginning)
+        {
+            Models.IReadingRefs readingRefs;
+            int weekNumber = ((date - lentBeginning).Days / 7) + 1;
+            int dayNumber = (int)date.DayOfWeek;
+
+            readingRefs = await _context.GreatLentReadings.Where(ar => ar.Week == weekNumber && ar.DayOfWeek == dayNumber).FirstAsync();
+
+            return readingRefs;
+        }
+
+        public async Task<Models.IReadingRefs> GetSundayReadingsRef(LocalDate copticDate)
+        {
+            Models.IReadingRefs readingRefs;
+            int i = 0;
+            int nbSunday = 0;
+
+            while (i < copticDate.Day)
+            {
+                if (copticDate.PlusDays(i).DayOfWeek == IsoDayOfWeek.Sunday)
+                    nbSunday += 1;
+                ++i;
+            }
+
+            readingRefs = await _context.SundayReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == nbSunday).FirstOrDefaultAsync();
+
+            return readingRefs;
+        }
+
+        public async Task<Models.IReadingRefs> GetAnnualReadingsRef(LocalDate copticDate)
+        {
+            return await _context.AnnualReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == copticDate.Day).FirstAsync();
+        }
+        #endregion
+
+        public async Task<DayReadings> GetFromRef(Models.IReadingRefs readingRefs)
+        {
+            var sections = new List<Section>();
+            if (readingRefs.V_Psalm_Ref != null)
+                sections.Add(await MakeVespers(readingRefs.V_Psalm_Ref, readingRefs.V_Gospel_Ref));
+            sections.Add(await MakeMatins(readingRefs.M_Psalm_Ref, readingRefs.M_Gospel_Ref, readingRefs.Prophecy));
+            sections.Add(await MakeLitugy(readingRefs.P_Gospel_Ref, readingRefs.C_Gospel_Ref, readingRefs.X_Gospel_Ref, readingRefs.L_Psalm_Ref, readingRefs.L_Gospel_Ref));
+            return new DayReadings
+            {
+                Sections = sections
+            };
+        }
+
+        #region Period DayReadings
+
+        public async Task<DayReadings> GetReadingsForAnnual(LocalDate copticDate)
+        {
+            var refs = await GetAnnualReadingsRef(copticDate);
+            return await GetFromRef(refs);
+        }
+
+        #endregion
 
         #region Liturgy
         private async Task<SubSection> MakePauline(string paulineRef)

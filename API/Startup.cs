@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Katameros.Repositories;
+using Katameros.Factories;
 
 namespace Katameros
 {
@@ -39,6 +40,7 @@ namespace Katameros
             services.AddScoped<ReadingsHelper>();
             services.AddScoped<ReadingsRepository>();
             services.AddScoped<FeastsFactory>();
+            services.AddScoped<SpecialCaseFactory>();
 
             services.AddControllers();
 

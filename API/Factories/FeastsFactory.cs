@@ -1,5 +1,4 @@
-﻿using Katameros.DTOs;
-using Katameros.Enums;
+﻿using Katameros.Enums;
 using NodaTime;
 using System;
 using System.Collections.Generic;
