@@ -93,6 +93,13 @@ namespace Katameros.Repositories
             return dayReadings;
         }
 
+        public async Task<DayReadings> GetReadingsForSunday(int copticMonth, int nbSunday)
+        {
+            var refs = await _context.SundayReadings.Where(ar => ar.Month_Number == copticMonth && ar.Day == nbSunday).FirstOrDefaultAsync();
+            DayReadings dayReadings = await GetFromRef(refs);
+            return dayReadings;
+        }
+
         #endregion
 
         #region Liturgy

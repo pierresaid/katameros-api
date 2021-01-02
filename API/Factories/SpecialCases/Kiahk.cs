@@ -38,6 +38,19 @@ namespace Katameros.Factories.SpecialCases
             {
                 return await _readingsRepository.GetReadingsForAnnual(CopticDateHelper.CreateCopticDate(29, CopticMonths.Kiahk));
             }
+
+            // If the fourth Sunday of Kiyahk falls immediately before the Nativity
+            // This means that the month of Kiyahk would be left with only three Sundays
+            // The fifth Sunday of Hatour is borrowed and added to the three Sundays of Kiyahk
+            var paramounDate = new DateTime(_gregorianDate.Year + 1, 1, 6); // The next (gregorian year's) paramoun
+            if (paramounDate.DayOfWeek == DayOfWeek.Sunday && _gregorianDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                var nbSundays = CopticDateHelper.NumberOfSundaysElapsed(_copticDate);
+                if (_copticDate.Month == CopticMonths.Hatour && CopticDateHelper.IsLastSundayOfMonth(_copticDate))
+                    return await _readingsRepository.GetReadingsForSunday(CopticMonths.Kiahk, 1);
+                else if (_copticDate.Month == CopticMonths.Kiahk) 
+                    return await _readingsRepository.GetReadingsForSunday(CopticMonths.Kiahk, nbSundays + 1);
+            }
             return null;
         }
     }

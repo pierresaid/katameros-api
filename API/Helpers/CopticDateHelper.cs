@@ -96,5 +96,24 @@ namespace Helpers.Katameros
             var copticDate = new LocalDate(currentYear, copticMonth, copticDay);
             return copticDate;
         }
+
+        public static int NumberOfSundaysElapsed(LocalDate date)
+        {
+            LocalDate iterator = new LocalDate(date.Year, date.Month, 1, date.Calendar);
+            int sundayCount = 0;
+
+            while (iterator.Day <= date.Day && iterator.Month == date.Month)
+            {
+                if (iterator.DayOfWeek == IsoDayOfWeek.Sunday)
+                    sundayCount++;
+                iterator = iterator.PlusDays(1);
+            }
+            return sundayCount;
+        }
+
+        public static bool IsLastSundayOfMonth(LocalDate date)
+        {
+            return date.DayOfWeek == IsoDayOfWeek.Sunday && date.Day + 7 > 30;
+        }
     }
 }
