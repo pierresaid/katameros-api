@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Helpers.Katameros;
 using Katameros.DTOs;
 using Katameros.Enums;
 using Katameros.Repositories;
@@ -29,18 +30,15 @@ namespace Katameros.Factories.SpecialCases
             // If the day which follows Christmas is on a sunday we read the 30 kiahk annual reading, and not the lessons of the fifth Sunday
             if (_copticDate.Month == CopticMonths.Kiahk && _copticDate.DayOfWeek == IsoDayOfWeek.Sunday && _copticDate.Day == 30)
             {
-                var copticDate = CreateCopticDate(30, CopticMonths.Kiahk);
-                return await _readingsRepository.GetReadingsForAnnual(copticDate);
+                return await _readingsRepository.GetReadingsForAnnual(CopticDateHelper.CreateCopticDate(30, CopticMonths.Kiahk));
+            }
+            // If Christmas fall on 28 kiahk we repeat the readings for 29 Kiahk also
+            if (_copticDate.Month == CopticMonths.Kiahk && _copticDate.Day == 29 
+                && new DateTime(_gregorianDate.Year, 1, 7).ToCopticDate().Day == 28)
+            {
+                return await _readingsRepository.GetReadingsForAnnual(CopticDateHelper.CreateCopticDate(29, CopticMonths.Kiahk));
             }
             return null;
-        }
-
-        private static LocalDate CreateCopticDate(int copticDay, int copticMonth)
-        {
-            var currentYear = LocalDate.FromDateTime(DateTime.Now, CalendarSystem.Gregorian)
-                                                 .WithCalendar(CalendarSystem.Coptic).Year;
-            var copticDate = new LocalDate(currentYear, copticMonth, copticDay);
-            return copticDate;
         }
     }
 }

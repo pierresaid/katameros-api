@@ -3,6 +3,7 @@
     // Each value correspond to the Id in the Feasts Table
     public enum Feast
     {
+        NONE = -1,
         Christmas = 1,
         Ascension = 2,
         LazarusSaturday = 3,
@@ -17,6 +18,7 @@
         Annunciation = 12,
         Cross = 13,
         FastOfNinevah = 14,
-        Jonas = 15
+        Jonas = 15,
+        Paramoun = 16,
     }
 }

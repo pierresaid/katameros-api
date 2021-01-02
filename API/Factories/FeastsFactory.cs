@@ -23,6 +23,7 @@ namespace Katameros.Repositories
             var feastCalcs = new List<FeastCalc>
             {
                 new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
+                new FeastCalc(Feast.Paramoun, IsParamoun, ConstructParamoun),
                 new FeastCalc(Feast.Ascension, 39, null),
                 new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
                 new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, CopticMonths.Baramoudah, CalendarSystem.Coptic), ConstructTempleEntrance),
@@ -45,6 +46,8 @@ namespace Katameros.Repositories
                 else if (feastCalc.CopticDate.HasValue && feastCalc.CopticDate.Value.Day == copticDate.Day && feastCalc.CopticDate.Value.Month == copticDate.Month)
                     return feastCalc;
                 else if (feastCalc.GregorianDate.HasValue && feastCalc.GregorianDate.Value.Day == gregorianDate.Day && feastCalc.GregorianDate.Value.Month == gregorianDate.Month)
+                    return feastCalc;
+                else if (feastCalc.Validator != null && feastCalc.Validator(gregorianDate, copticDate))
                     return feastCalc;
             }
             return null;

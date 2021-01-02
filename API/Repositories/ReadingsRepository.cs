@@ -84,10 +84,13 @@ namespace Katameros.Repositories
 
         #region Period DayReadings
 
-        public async Task<DayReadings> GetReadingsForAnnual(LocalDate copticDate)
+        public async Task<DayReadings> GetReadingsForAnnual(LocalDate copticDate, Feast feast = Feast.NONE)
         {
             var refs = await GetAnnualReadingsRef(copticDate);
-            return await GetFromRef(refs);
+            DayReadings dayReadings = await GetFromRef(refs);
+            if (feast != Feast.NONE)
+                dayReadings.Title = await _readingsHelper.GetFeastTranslation(feast);
+            return dayReadings;
         }
 
         #endregion

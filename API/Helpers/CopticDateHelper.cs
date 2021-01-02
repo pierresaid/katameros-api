@@ -88,5 +88,13 @@ namespace Helpers.Katameros
             var Pentecost = easterTime.AddDays(49);
             return Pentecost;
         }
+
+        public static LocalDate CreateCopticDate(int copticDay, int copticMonth)
+        {
+            var currentYear = LocalDate.FromDateTime(DateTime.Now, CalendarSystem.Gregorian)
+                                                 .WithCalendar(CalendarSystem.Coptic).Year;
+            var copticDate = new LocalDate(currentYear, copticMonth, copticDay);
+            return copticDate;
+        }
     }
 }
