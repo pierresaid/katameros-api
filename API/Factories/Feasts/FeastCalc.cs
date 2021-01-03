@@ -14,14 +14,16 @@ namespace Katameros
         public DateTime? GregorianDate { get; set; }
         public LocalDate? CopticDate { get; set; }
         public Func<DateTime, LocalDate, bool> Validator { get; set; } = null;
+        public Func<DateTime, LocalDate, DateTime> feastDateGetter = null;
         public int? EasterDaysDiff { get; set; }
         public Feast Feast { get; set; }
 
         public Func<Task<DayReadings>> FeastConstructor { get; set; }
-        public FeastCalc(Feast Feast, Func<DateTime, LocalDate, bool> validator, Func<Task<DayReadings>> FeastConstructor = null)
+        public FeastCalc(Feast Feast, Func<DateTime, LocalDate, bool> validator, Func<DateTime, LocalDate, DateTime> feastDateGetter, Func<Task<DayReadings>> FeastConstructor = null)
         {
             this.Feast = Feast;
             this.Validator = validator;
+            this.feastDateGetter = feastDateGetter;
             this.FeastConstructor = FeastConstructor;
         }
 

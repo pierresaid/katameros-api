@@ -9,6 +9,11 @@ namespace Katameros.Repositories
 {
     public partial class FeastsFactory
     {
+        private DateTime GetParamounDate(DateTime gregorianDate, LocalDate _)
+        {
+            return new DateTime(gregorianDate.Year, 1, 6);
+        }
+
         private bool IsParamoun(DateTime gregorianDate, LocalDate copticDate)
         {
             // If Paramoun fall on a Sunday the Paramoun last 3 days, 2 days on a Saturday or just one day

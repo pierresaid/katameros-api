@@ -1,4 +1,5 @@
-﻿using Katameros.Enums;
+﻿using Helpers.Katameros;
+using Katameros.Enums;
 using NodaTime;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,17 @@ namespace Katameros.Repositories
         private readonly DatabaseContext _context;
         private readonly ReadingsRepository _readingsRepository;
         private readonly ReadingsHelper _readingsHelper;
+        private readonly List<FeastCalc> _feasts;
 
         public FeastsFactory(DatabaseContext context, ReadingsRepository readingsRepository, ReadingsHelper readingsHelper)
         {
             _context = context;
             _readingsRepository = readingsRepository;
             _readingsHelper = readingsHelper;
-        }
-        public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
-        {
-            var feastCalcs = new List<FeastCalc>
+            _feasts = new List<FeastCalc>
             {
                 new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
-                new FeastCalc(Feast.Paramoun, IsParamoun, ConstructParamoun),
+                new FeastCalc(Feast.Paramoun, IsParamoun, GetParamounDate, ConstructParamoun),
                 new FeastCalc(Feast.Ascension, 39, null),
                 new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
                 new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, CopticMonths.Baramoudah, CalendarSystem.Coptic), ConstructTempleEntrance),
@@ -39,7 +38,11 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.PaschaMonday, -6, ConstructPaschaMonday),
                 new FeastCalc(Feast.PaschaTuesday, -5, ConstructPaschaTuesday),
             };
-            foreach (FeastCalc feastCalc in feastCalcs)
+        }
+        public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
+        {
+
+            foreach (FeastCalc feastCalc in this._feasts)
             {
                 if (feastCalc.EasterDaysDiff.HasValue && feastCalc.EasterDaysDiff == easterDaysDiff)
                     return feastCalc;
@@ -51,6 +54,35 @@ namespace Katameros.Repositories
                     return feastCalc;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Get The date of all the feasts for a year
+        /// </summary>
+        /// <param name="year"></param>
+        public List<(Feast, DateTime)> ComputeFeastsDate(int year)
+        {
+            List<(Feast, DateTime)> feasts = new List<(Feast, DateTime)>();
+
+            var date = new DateTime(year, 1, 1);
+            var copticDate = date.ToCopticDate();
+            CopticDateHelper copticDateHelper = new CopticDateHelper(date);
+            var easterDate = copticDateHelper.GetEasterDate();
+
+            foreach (var feastCalc in _feasts)
+            {
+                if (feastCalc.EasterDaysDiff.HasValue)
+                    feasts.Add(ValueTuple.Create(feastCalc.Feast, easterDate.AddDays(feastCalc.EasterDaysDiff.Value)));
+                else if (feastCalc.CopticDate.HasValue)
+                    feasts.Add(ValueTuple.Create(
+                        feastCalc.Feast,
+                        CopticDateHelper.ToGregorianDate(new LocalDate(copticDate.Year, feastCalc.CopticDate.Value.Month, feastCalc.CopticDate.Value.Day, CalendarSystem.Coptic))));
+                else if (feastCalc.GregorianDate.HasValue)
+                    feasts.Add(ValueTuple.Create(feastCalc.Feast, new DateTime(year, feastCalc.GregorianDate.Value.Month, feastCalc.GregorianDate.Value.Day)));
+                else if (feastCalc.feastDateGetter != null)
+                    feasts.Add(ValueTuple.Create(feastCalc.Feast, feastCalc.feastDateGetter(date, copticDate)));
+            }
+            return feasts;
         }
 
         public async Task<string> GetFeastTranslation(Feast feastId)

@@ -115,5 +115,11 @@ namespace Helpers.Katameros
         {
             return date.DayOfWeek == IsoDayOfWeek.Sunday && date.Day + 7 > 30;
         }
+
+        public static DateTime ToGregorianDate(LocalDate copticDate)
+        {
+            var localDate = copticDate.WithCalendar(CalendarSystem.Gregorian);
+            return new DateTime(localDate.Year, localDate.Month, localDate.Day);
+        }
     }
 }

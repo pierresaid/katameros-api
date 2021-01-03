@@ -37,6 +37,8 @@ namespace Katameros
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<LectionaryRepository>();
+            services.AddScoped<FeastsRepository>();
+            services.AddScoped<LectionaryRepository>();
             services.AddScoped<ReadingsHelper>();
             services.AddScoped<ReadingsRepository>();
             services.AddScoped<FeastsFactory>();
