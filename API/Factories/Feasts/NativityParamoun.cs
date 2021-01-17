@@ -9,12 +9,12 @@ namespace Katameros.Repositories
 {
     public partial class FeastsFactory
     {
-        private DateTime GetParamounDate(DateTime gregorianDate, LocalDate _)
+        private DateTime GetNativityParamounDate(DateTime gregorianDate, LocalDate _)
         {
             return new DateTime(gregorianDate.Year, 1, 6);
         }
 
-        private bool IsParamoun(DateTime gregorianDate, LocalDate copticDate)
+        private bool IsNativityParamoun(DateTime gregorianDate, LocalDate copticDate)
         {
             // If Paramoun fall on a Sunday the Paramoun last 3 days, 2 days on a Saturday or just one day
             var paramounDay = new DateTime(gregorianDate.Year, 1, 6);
@@ -25,9 +25,9 @@ namespace Katameros.Repositories
                 || gregorianDate == paramounDay);
         }
 
-        private async Task<DayReadings> ConstructParamoun()
+        private async Task<DayReadings> ConstructNativityParamoun()
         {
-            DayReadings paramoun = await _readingsRepository.GetReadingsForAnnual(CopticDateHelper.CreateCopticDate(28, CopticMonths.Kiahk), Feast.Paramoun);
+            DayReadings paramoun = await _readingsRepository.GetReadingsForAnnual(CopticDateHelper.CreateCopticDate(28, CopticMonths.Kiahk), Feast.NativityParamoun);
             return paramoun;
         }
     }

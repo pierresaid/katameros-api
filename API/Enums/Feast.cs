@@ -19,6 +19,8 @@
         Cross = 13,
         FastOfNinevah = 14,
         Jonas = 15,
-        Paramoun = 16,
+        NativityParamoun = 16,
+        TheophanyParamoun = 17,
+        Theophany = 18,
     }
 }

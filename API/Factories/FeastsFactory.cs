@@ -22,7 +22,7 @@ namespace Katameros.Repositories
             _feasts = new List<FeastCalc>
             {
                 new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
-                new FeastCalc(Feast.Paramoun, IsParamoun, GetParamounDate, ConstructParamoun),
+                new FeastCalc(Feast.NativityParamoun, IsNativityParamoun, GetNativityParamounDate, ConstructNativityParamoun),
                 new FeastCalc(Feast.Ascension, 39, null),
                 new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
                 new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, CopticMonths.Baramoudah, CalendarSystem.Coptic), ConstructTempleEntrance),
@@ -37,6 +37,8 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.PalmSunday, -7, ConstructPalmSunday),
                 new FeastCalc(Feast.PaschaMonday, -6, ConstructPaschaMonday),
                 new FeastCalc(Feast.PaschaTuesday, -5, ConstructPaschaTuesday),
+                new FeastCalc(Feast.TheophanyParamoun, new DateTime(1, 01, 18), null),
+                new FeastCalc(Feast.Theophany, new DateTime(1, 01, 19), null),
             };
         }
         public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)

@@ -108,7 +108,7 @@ namespace Katameros.Repositories
             {
                 readingRefs = await _readingsRepository.GePentecostReadingsRef(gregorianDate, easterDaysDiff);
             }
-            else if (copticDate.Day == 29 && copticDate.Month != CopticMonths.Amshir && copticDate.Month != CopticMonths.Toubah)
+            else if (copticDate.Day == 29 && gregorianDate.DayOfWeek == DayOfWeek.Sunday && copticDate.Month != CopticMonths.Amshir && copticDate.Month != CopticMonths.Toubah)
             {
                 return await _feastsFactory.Construct29OfMonth();
             }

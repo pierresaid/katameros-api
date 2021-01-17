@@ -20,6 +20,7 @@ namespace Katameros.Factories
             _readingsRepository = readingsRepository;
             _readingsHelper = readingsHelper;
         }
+
         public async Task<DayReadings> HasSpecialCase(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
         {
             var specialCases = new List<ISpecialCase>
