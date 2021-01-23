@@ -22,5 +22,6 @@
         NativityParamoun = 16,
         TheophanyParamoun = 17,
         Theophany = 18,
+        WeddingOfCana = 19,
     }
 }

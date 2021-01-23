@@ -38,7 +38,7 @@ namespace Katameros.Repositories
             {
                 Id = (int)x.Item1,
                 Date = x.Item2,
-                Name = feastsTranslations.Where(t => t.FeastId == (int)x.Item1).FirstOrDefault().Text
+                Name = feastsTranslations.Where(t => t.FeastId == (int)x.Item1).FirstOrDefault()?.Text
             });
         }
 

@@ -39,6 +39,7 @@ namespace Katameros.Repositories
                 new FeastCalc(Feast.PaschaTuesday, -5, ConstructPaschaTuesday),
                 new FeastCalc(Feast.TheophanyParamoun, new DateTime(1, 01, 18), null),
                 new FeastCalc(Feast.Theophany, new DateTime(1, 01, 19), null),
+                new FeastCalc(Feast.WeddingOfCana, new DateTime(1, 01, 21), null),
             };
         }
         public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)
