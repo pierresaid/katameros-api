@@ -23,5 +23,7 @@
         TheophanyParamoun = 17,
         Theophany = 18,
         WeddingOfCana = 19,
+        GreatLentPreparationSaturday = 20,
+        GreatLentPreparationSunday = 21,
     }
 }
