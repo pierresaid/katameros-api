@@ -27,8 +27,11 @@ namespace Katameros.Repositories
             {
                 var splittedVerses = versesRef.Split('-');
                 int from = int.Parse(string.Concat(splittedVerses[0]));
-                int to = int.Parse(string.Concat(splittedVerses[1]));
-                query = query.Where(v => v.Number >= from && v.Number <= to);
+                int to = splittedVerses[1] == "end" ? -1 : int.Parse(string.Concat(splittedVerses[1]));
+                if (to == -1) // To the end
+                    query = query.Where(v => v.Number >= from);
+                else
+                    query = query.Where(v => v.Number >= from && v.Number <= to);
             }
             else if (versesRef.Contains(','))
             {
@@ -40,13 +43,16 @@ namespace Katameros.Repositories
                 query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
             }
             var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
-            passage.Ref = $"{passage.Chapter}:{versesRef}";
+            
             passage.BookTranslation = bookTranslation;
             passage.Verses = query.ToList();
             if (versesRef.Contains(','))
             {
                 passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
             }
+            if (versesRef.Contains("end"))
+                versesRef = versesRef.Replace("end", passage.Verses.Last().Number.ToString());
+            passage.Ref = $"{passage.Chapter}:{versesRef}";
             return passage;
         }
 
@@ -70,7 +76,23 @@ namespace Katameros.Repositories
 
         public string[] GetRefs(string refs)
         {
-            return refs.Split(new string[] { "*@+", "@" }, StringSplitOptions.None);
+         var  res =   refs.Split(new string[] { "*@+", "@" }, StringSplitOptions.None).ToList();
+
+            for (int i = 0; i < res.Count; i++)
+            {
+                var refe = res[i];
+                if (refe.IndexOf(":") != refe.LastIndexOf(":"))
+                {
+                    res.Insert(i + 1, refe);
+
+                    string[] p = refe.Split(new string[] { "-", ":" }, StringSplitOptions.None);
+
+                    res[i] = $"{p[0]}:{p[1]}-end";
+                    res[i + 1] = $"{p[0].Split('.')[0]}.{p[2]}:1-{p[3]}";
+                }
+            }
+            
+            return res.ToArray();
         }
 
         public async Task<string> GetSectionMeta(SectionType sectionType, SectionsMetadata sectionsMetadata)
@@ -99,3 +121,62 @@ namespace Katameros.Repositories
         }
     }
 }
+
+
+//private async Task<Passage> MakePassage(string passageRef)
+//{
+//    Passage passage = new Passage();
+
+//    var splittedPassageRef = passageRef.Split('.', ':');
+//    passage.BookId = int.Parse(splittedPassageRef[0]);
+//    passage.Chapter = int.Parse(splittedPassageRef[1]);
+//    List<int> splittedVersesComma = null;
+//    List<int> chapterArray = null;
+
+
+//    var query = _context.Verses.Where(v => v.BibleId == this._context.BibleId && v.BookId == passage.BookId);
+//    string versesRef = splittedPassageRef[2];
+//    if (versesRef.Contains('-') && splittedPassageRef.Length < 4)
+//    {
+//        var splittedVerses = versesRef.Split('-');
+//        int from = int.Parse(string.Concat(splittedVerses[0]));
+//        int to = int.Parse(string.Concat(splittedVerses[1]));
+//        query = query.Where(v => v.Number >= from && v.Number <= to && v.Chapter == passage.Chapter);
+//    }
+//    else if (versesRef.Contains('-') && splittedPassageRef.Length == 4)
+//    {
+//        var splittedMulti = versesRef.Split('-');
+
+//        int secondChapter = int.Parse(string.Concat(splittedMulti[1]));
+//        int from = int.Parse(string.Concat(splittedMulti[0]));
+
+//        int to = int.Parse(string.Concat(splittedPassageRef[3]));
+
+//        chapterArray = new List<int>() { passage.Chapter, secondChapter };
+
+//        query = query.Where(v => (v.Number >= from && v.Chapter == passage.Chapter) || (v.Number <= to && v.Chapter == secondChapter));
+//    }
+//    else if (versesRef.Contains(','))
+//    {
+//        splittedVersesComma = versesRef.Split(',').Select(s => int.Parse(s)).ToList();
+//        query = query.Where(v => splittedVersesComma.Contains(v.Number) && v.Chapter == passage.Chapter);
+//    }
+//    else
+//    {
+//        query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)) && v.Chapter == passage.Chapter);
+//    }
+//    var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
+//    passage.Ref = $"{passage.Chapter}:{versesRef}";
+//    passage.BookTranslation = bookTranslation;
+//    passage.Verses = query.ToList();
+//    if (versesRef.Contains(','))
+//    {
+//        passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
+//    }
+//    if (versesRef.Contains('-') && splittedPassageRef.Length == 4)
+//    {
+//        passage.Verses.OrderBy(v => chapterArray.FindIndex(c => c == v.Chapter))
+//                     .ThenBy(v => v.Number);
+//    }
+//    return passage;
+//}
