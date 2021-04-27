@@ -20,7 +20,7 @@ namespace Katameros.Repositories
             var EleventhHour = await _readingsHelper.GetSectionMeta(SectionType.EleventhHour, SectionsMetadata.Title);
 
             var EveOf = await _readingsHelper.GetSentence(Sentence.EveOf);
-            var NextDay = await GetFeastTranslation(Feast.PaschaWednesday);
+            var NextDay = await GetFeastTranslation(Feast.PaschaThursday);
 
             dayReadings.Sections = new List<Section>() {
                 new Section(SectionType.FirstHour)
