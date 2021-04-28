@@ -309,9 +309,30 @@ namespace Katameros.Repositories
             var subSection = new SubSection(SubSectionType.Prophecy);
             var readings = new List<Reading>();
 
-            Reading reading = await _readingsHelper.MakeReading(passageRef, ReadingType.Prophecy);
-            reading.Conclusion = await _readingsHelper.GetReadingMeta(ReadingType.Prophecy, ReadingsMetadata.Conclusion);
-            readings.Add(reading);
+            var conclusion = await _readingsHelper.GetReadingMeta(ReadingType.Prophecy, ReadingsMetadata.Conclusion);
+            var refs = _readingsHelper.GetRefs(passageRef);
+
+            foreach (var readingRef in refs)
+            {
+                Reading reading = await _readingsHelper.MakeReading(readingRef, ReadingType.Prophecy);
+                reading.Conclusion = conclusion;
+                var last = readings.LastOrDefault();
+                var lastNumber = last == null ? null : _context.Verses.Where(v => v.BibleId == this._context.BibleId
+                                                       && v.BookId == last.Passages.FirstOrDefault().BookId
+                                                       && v.Chapter == last.Passages.FirstOrDefault().Chapter)
+                                           .OrderByDescending(v => v.Number).Take(1);
+                if (last != null
+                    && last.Passages.FirstOrDefault().BookId == reading.Passages.FirstOrDefault().BookId
+                    && last.Passages.FirstOrDefault().Chapter == reading.Passages.FirstOrDefault().Chapter - 1
+                    && reading.Passages.FirstOrDefault().Verses.FirstOrDefault().Number == 1
+                    && last.Passages.FirstOrDefault().Verses.LastOrDefault().Number == lastNumber.FirstOrDefault().Number)
+                {
+                    last.Passages.LastOrDefault().Verses.AddRange(reading.Passages.SelectMany(x => x.Verses));
+                    last.Passages.LastOrDefault().Ref = last.Passages.LastOrDefault().Ref.Split("-")[0] + "-" + reading.Passages.LastOrDefault().Ref.Split(":")[0] + ":" + reading.Passages.LastOrDefault().Ref.Split("-")[1];
+                }
+                else
+                    readings.Add(reading);
+            }
 
             subSection.Readings = readings;
             return subSection;
