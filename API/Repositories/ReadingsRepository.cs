@@ -45,7 +45,7 @@ namespace Katameros.Repositories
             return readingRefs;
         }
 
-        public async Task<Models.IReadingRefs> GetSundayReadingsRef(LocalDate copticDate)
+        public async Task<(Models.IReadingRefs, int)> GetSundayReadingsRef(LocalDate copticDate)
         {
             Models.IReadingRefs readingRefs;
             int i = 0;
@@ -59,8 +59,7 @@ namespace Katameros.Repositories
             }
 
             readingRefs = await _context.SundayReadings.Where(ar => ar.Month_Number == copticDate.Month && ar.Day == nbSunday).FirstOrDefaultAsync();
-
-            return readingRefs;
+            return (readingRefs, nbSunday);
         }
 
         public async Task<Models.IReadingRefs> GetAnnualReadingsRef(LocalDate copticDate)

@@ -1,4 +1,5 @@
 ﻿using Helpers.Katameros;
+using Humanizer;
 using Katameros.DTOs;
 using Katameros.Enums;
 using Katameros.Factories;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
 namespace Katameros.Repositories
 {
     public class LectionaryRepository
@@ -88,6 +88,7 @@ namespace Katameros.Repositories
             var (lentBeginning, lentEnding) = copticDateHelper.GetGreatLentPeriod();
             var easterDate = copticDateHelper.GetEasterDate();
             var easterDaysDiff = (gregorianDate - easterDate).Days;
+            int nbSundays = -1;
 
             var specialCaseReadings = await _specialCaseFactory.HasSpecialCase(gregorianDate, copticDate, easterDaysDiff);
             if (specialCaseReadings != null)
@@ -114,7 +115,7 @@ namespace Katameros.Repositories
             }
             else if (gregorianDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                readingRefs = await _readingsRepository.GetSundayReadingsRef(copticDate);
+                (readingRefs, nbSundays) = await _readingsRepository.GetSundayReadingsRef(copticDate);
             }
             else
             {
@@ -126,8 +127,36 @@ namespace Katameros.Repositories
             DayReadings dayReadings = await _readingsRepository.GetFromRef(readingRefs);
             if (dayFeast != null)
                 dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
-
+            if (nbSundays != -1)
+                dayReadings.PeriodInfo = $"{ getOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
             return dayReadings;
+        }
+
+        private  string getOrdinalizeWithLanguage(int nbSundays)
+        {
+            string langStr = _context.LanguageId switch
+            {
+                1 => "fr",
+                2 => "en",
+                3 => "ar",
+                _ => "",
+            };
+            return nbSundays.Ordinalize(culture: System.Globalization.CultureInfo.CreateSpecificCulture(langStr));
+        }
+
+        private string getSundayTranslation()
+        {
+            switch (_context.LanguageId)
+            {
+                case 1:
+                    return "Dimanche";
+                case 2:
+                    return "Sunday";
+                case 3:
+                    return "الأحد";
+                default:
+                    return "";
+            }
         }
     }
 }
