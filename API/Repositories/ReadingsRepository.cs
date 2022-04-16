@@ -193,7 +193,7 @@ namespace Katameros.Repositories
             return output;
         }
 
-        private async Task<SubSection> MakeActs(string actsRef)
+        public async Task<SubSection> MakeActs(string actsRef)
         {
             return new SubSection(SubSectionType.Acts)
             {
@@ -238,6 +238,20 @@ namespace Katameros.Repositories
             {
                 gospel.Introduction = gospel.Introduction.Replace("$", evangelist);
             }
+            readings.Add(gospel);
+            subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
+            subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
+            subSection.Readings = readings;
+            return subSection;
+        }
+
+        public async Task<SubSection> MakeGospel(string gospelRef)
+        {
+            SubSection subSection = new SubSection(SubSectionType.PsalmAndGospel);
+            List<Reading> readings = new List<Reading>();
+
+            Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
+            var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
             readings.Add(gospel);
             subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
             subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
