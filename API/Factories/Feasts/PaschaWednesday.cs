@@ -112,7 +112,7 @@ namespace Katameros.Repositories
                 {
                     Title = $"{EleventhHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
-                        await _readingsRepository.MakeOldTestament("24.8:4-10"),
+                        await _readingsRepository.MakeOldTestament("24.8:4-9"),
                         await _readingsRepository.MakePsalmAndGospel("19.62:7,6", "43.12:44-50"),
                     }
                 }

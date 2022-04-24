@@ -102,7 +102,7 @@ namespace Katameros.Repositories
         #endregion
 
         #region Liturgy
-        private async Task<SubSection> MakePauline(string paulineRef)
+        public async Task<SubSection> MakePauline(string paulineRef)
         {
             var subSection = new SubSection(SubSectionType.Pauline);
             Reading reading = await _readingsHelper.MakeReading(paulineRef, ReadingType.Pauline);
@@ -142,7 +142,7 @@ namespace Katameros.Repositories
             return subSection;
         }
 
-        private async Task<SubSection> MakeCatholic(string catholicRef)
+        public async Task<SubSection> MakeCatholic(string catholicRef)
         {
             var subSection = new SubSection(SubSectionType.Catholic);
             Reading reading = await _readingsHelper.MakeReading(catholicRef, ReadingType.Catholic);
@@ -193,7 +193,7 @@ namespace Katameros.Repositories
             return output;
         }
 
-        private async Task<SubSection> MakeActs(string actsRef)
+        public async Task<SubSection> MakeActs(string actsRef)
         {
             return new SubSection(SubSectionType.Acts)
             {
@@ -241,6 +241,39 @@ namespace Katameros.Repositories
             readings.Add(gospel);
             subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
             subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
+            subSection.Readings = readings;
+            return subSection;
+        }
+
+        public async Task<SubSection> MakePsalmsAndGospels(IEnumerable<string> psalmRefs, IEnumerable<string> gospelRefs)
+        {
+            SubSection subSection = new SubSection(SubSectionType.PsalmAndGospel);
+            List<Reading> readings = new List<Reading>();
+
+            //subSection.Introduction = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Introduction);
+            foreach (var psalmRef in psalmRefs)
+                readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm, ReadingMode.Simple));
+            foreach (var gospelRef in gospelRefs)
+                readings.Add(await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel, ReadingMode.Simple));
+
+            subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
+            subSection.Readings = readings;
+            return subSection;
+        }
+
+        public async Task<SubSection> MakePsalmAndGospel(string psalmRef, string psalmRef2, string gospelRef)
+        {
+            var subSection = await this.MakePsalmAndGospel(psalmRef, gospelRef);
+            var psalm2 = await _readingsHelper.MakeReading(psalmRef2, ReadingType.Psalm);
+            subSection.Readings.Insert(1, psalm2);
+            return subSection;
+        }
+
+        public async Task<SubSection> MakePsalm(string psalmRef)
+        {
+            SubSection subSection = new SubSection(SubSectionType.Psalm);
+            List<Reading> readings = new List<Reading>();
+            readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
             subSection.Readings = readings;
             return subSection;
         }
