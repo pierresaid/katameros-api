@@ -8,6 +8,7 @@ namespace Katameros.Repositories
 {
     public partial class FeastsFactory
     {
+        // TODO Fix psalms
         private async Task<DayReadings> ConstructPaschaThursday()
         {
             DayReadings dayReadings = new DayReadings();
@@ -42,7 +43,7 @@ namespace Katameros.Repositories
                         await _readingsRepository.MakeOldTestament("2.32:30-33:5"),
                         await _readingsRepository.MakeOldTestament("73.24:1-11"),
                         await _readingsRepository.MakeOldTestament("38.9:11-14"),
-                        await _readingsRepository.MakeOldTestament("22.30:2-6"),
+                        await _readingsRepository.MakeOldTestament("20.30:2-6"),
                         await _readingsRepository.MakePsalmAndGospel("19.93:21,23", "40.26:17-19"),
                     }
                 },
@@ -67,14 +68,14 @@ namespace Katameros.Repositories
                         await _readingsRepository.MakePsalmAndGospel("19.22:1", "40.26:17-19"),
                     }
                 },
-                // todo lakane + liturgie
+                // todo lakane + liturgie, TODO Gospel intro
                 new Section(SectionType.EleventhHour)
                 {
                     Title = EleventhHour,
                     SubSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("23.52:13-53:12"),
                         await _readingsRepository.MakeOldTestament("23.19:19-25"),
-                        await _readingsRepository.MakeOldTestament("38.12:11-14:1-4*@+38.14:6-9"),
+                        await _readingsRepository.MakeOldTestament("38.12:11-14:4*@+38.14:6-9"),
                         await _readingsRepository.MakePsalmAndGospel("19.49:17,18", "43.13:21-30"),
                     }
                 },
@@ -83,43 +84,41 @@ namespace Katameros.Repositories
                     Title = $"{FirstHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
                         await _readingsRepository.MakeOldTestament("24.8:17-9:6"),
-                        await _readingsRepository.MakePsalmAndGospel("19.101:1,9", "43.13:33-14:25"),
-                        await _readingsRepository.MakeGospel("43.14:26-15:25"),
-                        await _readingsRepository.MakeGospel("43.15:26-16:33"),
-                        await _readingsRepository.MakeGospel("43.17:1-26"),
-
+                        await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.101:1,9"), Tk.A("43.13:33-14:25", "43.14:26-15:25", "43.15:26-16:33", "43.17:1-26")),
                     }
                 },
                 new Section(SectionType.EveThirdHour)
                 {
                     Title = $"{ThirdHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
-                        await _readingsRepository.MakeOldTestament("30.4:4-13"),
-                        await _readingsRepository.MakePsalmAndGospel("19.55:21,1", "41.14:3-11"),
+                        await _readingsRepository.MakeOldTestament("26.36:16-23"),
+                        await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.108:1,2"), Tk.A("40.26:30-35", "41.14:26-31", "42.22:31-39", "43.18:1,2")),
                     }
                 },
                 new Section(SectionType.EveSixthHour)
                 {
                     Title = $"{SixthHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
-                        await _readingsRepository.MakeOldTestament("30.3:1-11"),
-                        await _readingsRepository.MakePsalmAndGospel("19.140:1,2", "43.12:36-43"),
+                        await _readingsRepository.MakeOldTestament("26.22:23-28"),
+                        await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.58:2*@+19.68:21"), Tk.A("40.26:36-46", "41.14:32-42", "42.22:40-46", "43.18:3-9")),
                     }
                 },
                 new Section(SectionType.EveNinthHour)
                 {
                     Title = $"{NinthHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
-                        await _readingsRepository.MakeOldTestament("26.20:27-33"),
-                        await _readingsRepository.MakePsalmAndGospel("19.7:1-2", "43.10:29-38"),
+                        await _readingsRepository.MakeOldTestament("24.9:6-10"),
+                        await _readingsRepository.MakeOldTestament("26.21:33-37"),
+                        await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.27:3,4", "19.34:4,5"), Tk.A("40.26:47-58", "41.14:43-54", "42.22:47-55", "43.18:10-14")),
+                        
                     }
                 },
                 new Section(SectionType.EveEleventhHour)
                 {
                     Title = $"{EleventhHour} {EveOf} {NextDay}",
                     SubSections = new List<SubSection>() {
-                        await _readingsRepository.MakeOldTestament("24.8:4-9"),
-                        await _readingsRepository.MakePsalmAndGospel("19.62:7,6", "43.12:44-50"),
+                        await _readingsRepository.MakeOldTestament("23.27:11-28:15"),
+                        await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.2:1-5"), Tk.A("40.26:59-75", "41.14:55-72", "42.22:56-65", "43.18:15-27")),
                     }
                 }
             };

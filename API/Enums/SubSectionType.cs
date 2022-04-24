@@ -6,6 +6,8 @@
         Prophecy = 2,
         Pauline = 3,
         Catholic = 4,
-        Acts = 5
+        Acts = 5,
+        Psalm = 6,
+        Gospel = 7,
     }
 }
