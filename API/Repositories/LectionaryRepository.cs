@@ -139,6 +139,7 @@ namespace Katameros.Repositories
                 1 => "fr",
                 2 => "en",
                 3 => "ar",
+                4 => "it",
                 _ => "",
             };
             return nbSundays.Ordinalize(culture: System.Globalization.CultureInfo.CreateSpecificCulture(langStr));
@@ -154,6 +155,8 @@ namespace Katameros.Repositories
                     return "Sunday";
                 case 3:
                     return "الأحد";
+                case 4:
+                    return "Domenica";
                 default:
                     return "";
             }

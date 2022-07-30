@@ -158,6 +158,8 @@ namespace Katameros.Repositories
 
         private string NumeriseEpistle(string Introduction, Passage firstPassage, int lastIndex = -1)
         {
+            if (Introduction == null)
+                return "";
             var first = Introduction.IndexOf('[');
             var last = lastIndex != -1 ? lastIndex : Introduction.LastIndexOf(']');
             if (first == -1 || last == -1)
@@ -234,7 +236,7 @@ namespace Katameros.Repositories
             var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
             if (psalmRef == null)
                 gospel.Introduction = null;
-            else if (gospel.Introduction.Contains("$"))
+            else if (gospel.Introduction != null && gospel.Introduction.Contains("$"))
             {
                 gospel.Introduction = gospel.Introduction.Replace("$", evangelist);
             }
