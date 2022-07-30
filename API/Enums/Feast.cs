@@ -25,5 +25,6 @@
         WeddingOfCana = 19,
         GreatLentPreparationSaturday = 20,
         GreatLentPreparationSunday = 21,
+        Easter = 22,
     }
 }

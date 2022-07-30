@@ -43,7 +43,7 @@ namespace Katameros.Repositories
                 query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
             }
             var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
-            
+
             passage.BookTranslation = bookTranslation;
             passage.Verses = query.ToList();
             if (versesRef.Contains(','))
@@ -56,7 +56,7 @@ namespace Katameros.Repositories
             return passage;
         }
 
-        public async Task<Reading> MakeReading(string passagesRef, ReadingType readingType)
+        public async Task<Reading> MakeReading(string passagesRef, ReadingType readingType, int readingMode = ReadingMode.Complete)
         {
             Reading reading = new Reading(readingType);
             List<Passage> passages = new List<Passage>();
@@ -68,30 +68,53 @@ namespace Katameros.Repositories
             }
 
             reading.Passages = passages;
-            reading.Introduction = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Introduction, _context.LanguageId))?.Text;
-            reading.Conclusion = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Conclusion, _context.LanguageId))?.Text;
+            if (readingMode == ReadingMode.Complete)
+            {
+                reading.Introduction = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Introduction, _context.LanguageId))?.Text;
+                reading.Conclusion = (await _context.ReadingsMetadatasTranslations.FindAsync((int)readingType, (int)ReadingsMetadata.Conclusion, _context.LanguageId))?.Text;
+            }
 
             return reading;
         }
 
-        public string[] GetRefs(string refs)
+        public string[] GetRefs(string refsStr)
         {
-         var  res =   refs.Split(new string[] { "*@+", "@" }, StringSplitOptions.None).ToList();
+            var refs = refsStr.Split(new string[] { "*@+", "@" }, StringSplitOptions.None).ToList();
+            var res = new List<string>();
 
-            for (int i = 0; i < res.Count; i++)
+            foreach (var refe in refs)
             {
-                var refe = res[i];
                 if (refe.IndexOf(":") != refe.LastIndexOf(":"))
                 {
-                    res.Insert(i + 1, refe);
-
                     string[] p = refe.Split(new string[] { "-", ":" }, StringSplitOptions.None);
 
-                    res[i] = $"{p[0]}:{p[1]}-end";
-                    res[i + 1] = $"{p[0].Split('.')[0]}.{p[2]}:1-{p[3]}";
+                    var book = p[0].Split('.')[0];
+                    var chapterBegin1 = p[0].Split('.')[1];
+                    var verseBegin1 = p[1];
+                    var chapterBegin2 = p[2];
+                    var verseBegin2 = "1";
+                    var verseEnd2 = p[3];
+                    if (p.Length > 4)
+                    {
+                        verseBegin2 = p[3];
+                        verseEnd2 = p[4];
+                    }
+
+                    res.Add($"{book}.{chapterBegin1}:{verseBegin1}-end");
+
+                    int chap1 = int.Parse(chapterBegin1);
+                    int chap2 = int.Parse(chapterBegin2);
+                    while (chap2 > chap1 + 1)
+                    {
+                        chap1 += 1;
+                        res.Add($"{book}.{chap1}:1-end");
+                    }
+                    res.Add($"{book}.{chapterBegin2}:{verseBegin2}-{verseEnd2}");
                 }
+                else
+                    res.Add(refe);
             }
-            
+
             return res.ToArray();
         }
 
