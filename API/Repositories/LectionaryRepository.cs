@@ -129,6 +129,9 @@ namespace Katameros.Repositories
                 dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
             if (nbSundays != -1)
                 dayReadings.PeriodInfo = $"{ getOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
+
+            dayReadings.Bibles = await _context.Bibles.Where(x => x.LanguageId == this._context.LanguageId).ToListAsync();
+            dayReadings.Bible = dayReadings.Bibles.FirstOrDefault(x => x.Id == _context.BibleId);
             return dayReadings;
         }
 
