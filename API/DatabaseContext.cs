@@ -1,5 +1,6 @@
 ﻿using Katameros.Models;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Katameros
 {
@@ -8,6 +9,7 @@ namespace Katameros
 
         public int BibleId { get; set; }
         public int LanguageId { get; set; }
+        public LocalDate CopticDate { get; set; }
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
         }
@@ -49,5 +51,7 @@ namespace Katameros
         public DbSet<ReadingsMetadatasTranslation> ReadingsMetadatasTranslations { get; set; }
         public DbSet<Sentences> Sentences { get; set; }
         public DbSet<SentencesTranslation> SentencesTranslations { get; set; }
+        public DbSet<Synaxarium> Synaxarium { get; set; }
+
     }
 }

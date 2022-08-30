@@ -1,9 +1,11 @@
-﻿using Katameros.DTOs;
+﻿using Humanizer;
+using Katameros.DTOs;
 using Katameros.Enums;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -214,6 +216,8 @@ namespace Katameros.Repositories
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
             subSections.Add(await MakeActs(actsRef));
+            if (_context.LanguageId == 1)
+                subSections.Add(await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month));
             if (gospelRef != null)
                 subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
 
@@ -280,6 +284,78 @@ namespace Katameros.Repositories
             return subSection;
         }
         #endregion
+
+
+        #region Synaxarium
+        private async Task<SubSection> MakeSynaxarium(int day, int month)
+        {
+            SubSection subSection = new SubSection(SubSectionType.Synaxarium);
+
+            var test = _context.CopticDate.ToString("MMM", CultureInfo.CreateSpecificCulture("co"));
+
+            var synaxs = await _context.Synaxarium.Where(x => x.LanguageId == _context.LanguageId && x.Day == day && x.Month == month).OrderBy(x => x.Order).ToListAsync();
+
+            List<Reading> readings = synaxs.Select(x => new Reading(ReadingType.Synaxarium) {
+                Title = x.Title,
+                Html = x.Text
+            }).ToList();
+
+
+            subSection.Introduction = await _readingsHelper.GetSubSectionMeta(SubSectionType.Synaxarium, SubSectionsMetadata.Introduction);
+            subSection.Introduction = subSection.Introduction.ReplaceFirst("$", getOrdinalizeWithLanguage(day));
+            subSection.Introduction = subSection.Introduction.ReplaceFirst("$", getCopticMonth(month));
+
+
+            var first = subSection.Introduction.IndexOf('[');
+            var last = subSection.Introduction.LastIndexOf(']');
+
+            Regex regex = new Regex("(?<=\\[).*?(?=\\])");
+            var matches = regex.Matches(subSection.Introduction);
+
+            int matchesCount = matches.Count;
+
+            var opt1 = matchesCount >= 1 ? matches[0]?.Value : null;
+            var opt2 = matchesCount >= 1 ? matches[1]?.Value : null;
+
+            subSection.Introduction = $"{subSection.Introduction.Substring(0, first)}{(day <= 15 ? opt1 : opt2)}{subSection.Introduction.Substring(last + 1, subSection.Introduction.Length - 1 - last)}";
+            subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Synaxarium, ReadingsMetadata.Title);
+            subSection.Readings = readings;
+            return subSection;
+        }
+
+        private string getCopticMonth(int month)
+        {
+            var coptic_months = new List<string>() {
+                "Thout",
+                "Babah",
+                "Hatour",
+                "Kiahk",
+                "Toubah",
+                "Amshir",
+                "Baramhat",
+                "Baramoudah",
+                "Bashans",
+                "Baounah",
+                "Abib",
+                "Misra",
+                "Nasie",
+            };
+            return coptic_months[month];
+        }
+        private string getOrdinalizeWithLanguage(int day)
+        {
+            string langStr = _context.LanguageId switch
+            {
+                1 => "fr",
+                2 => "en",
+                3 => "ar",
+                4 => "it",
+                _ => "",
+            };
+            return day.Ordinalize(culture: CultureInfo.CreateSpecificCulture(langStr));
+        }
+        #endregion
+
 
         #region Matins
         public async Task<Section> MakeMatins(string psalmRef, string gospelRef, string prophecyRef = null)

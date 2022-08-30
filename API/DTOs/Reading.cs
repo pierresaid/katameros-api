@@ -10,6 +10,7 @@ namespace Katameros.DTOs
         public string Introduction { get; set; }
         public string Conclusion { get; set; }
         public List<Passage> Passages { get; set; }
+        public string Html { get; set; }
         public Reading(ReadingType readingType)
         {
             Id = (int)readingType;

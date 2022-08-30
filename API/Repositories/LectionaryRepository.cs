@@ -81,6 +81,7 @@ namespace Katameros.Repositories
         /// <param name="gregorianDate">The date</param>
         public async Task<DayReadings> GetForDay(DateTime gregorianDate)
         {
+            DayReadings dayReadings;
             Models.IReadingRefs readingRefs;
             CopticDateHelper copticDateHelper = new CopticDateHelper(gregorianDate);
 
@@ -89,16 +90,24 @@ namespace Katameros.Repositories
             var easterDate = copticDateHelper.GetEasterDate();
             var easterDaysDiff = (gregorianDate - easterDate).Days;
             int nbSundays = -1;
+            _context.CopticDate = copticDate;
 
             var specialCaseReadings = await _specialCaseFactory.HasSpecialCase(gregorianDate, copticDate, easterDaysDiff);
             if (specialCaseReadings != null)
+            {
+                await AddBibleInfo(specialCaseReadings);
                 return specialCaseReadings;
+            }
 
             var dayFeast = _feastsFactory.GetDayFeast(gregorianDate, copticDate, easterDaysDiff);
             if (dayFeast != null)
             {
                 if (dayFeast.FeastConstructor != null)
-                    return await dayFeast.FeastConstructor();
+                {
+                    dayReadings = await dayFeast.FeastConstructor();
+                    await AddBibleInfo(dayReadings);
+                    return dayReadings;
+                }
             }
 
             if (lentBeginning.Ticks <= gregorianDate.Ticks && gregorianDate.Ticks <= lentEnding.Ticks)
@@ -111,7 +120,9 @@ namespace Katameros.Repositories
             }
             else if (copticDate.Day == 29 && gregorianDate.DayOfWeek == DayOfWeek.Sunday && copticDate.Month != CopticMonths.Amshir && copticDate.Month != CopticMonths.Toubah)
             {
-                return await _feastsFactory.Construct29OfMonth();
+                dayReadings = await _feastsFactory.Construct29OfMonth();
+                await AddBibleInfo(dayReadings);
+                return dayReadings;
             }
             else if (gregorianDate.DayOfWeek == DayOfWeek.Sunday)
             {
@@ -124,15 +135,20 @@ namespace Katameros.Repositories
             if (readingRefs == null)
                 return null;
 
-            DayReadings dayReadings = await _readingsRepository.GetFromRef(readingRefs);
+            dayReadings = await _readingsRepository.GetFromRef(readingRefs);
             if (dayFeast != null)
                 dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
             if (nbSundays != -1)
                 dayReadings.PeriodInfo = $"{ getOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
 
+            await AddBibleInfo(dayReadings);
+            return dayReadings;
+        }
+
+        private async Task AddBibleInfo(DayReadings dayReadings)
+        {
             dayReadings.Bibles = await _context.Bibles.Where(x => x.LanguageId == this._context.LanguageId).ToListAsync();
             dayReadings.Bible = dayReadings.Bibles.FirstOrDefault(x => x.Id == _context.BibleId);
-            return dayReadings;
         }
 
         private  string getOrdinalizeWithLanguage(int nbSundays)

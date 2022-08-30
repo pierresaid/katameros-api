@@ -9,5 +9,6 @@
         Acts = 5,
         Psalm = 6,
         Gospel = 7,
+        Synaxarium = 10,
     }
 }
