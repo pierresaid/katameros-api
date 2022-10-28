@@ -142,6 +142,7 @@ namespace Katameros.Repositories
                 dayReadings.PeriodInfo = $"{ getOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
 
             await AddBibleInfo(dayReadings);
+            dayReadings.CopticDate = $"{copticDate.Day}/{copticDate.Month}/{copticDate.Year}";
             return dayReadings;
         }
 

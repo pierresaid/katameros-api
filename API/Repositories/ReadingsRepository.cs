@@ -109,7 +109,7 @@ namespace Katameros.Repositories
             var subSection = new SubSection(SubSectionType.Pauline);
             Reading reading = await _readingsHelper.MakeReading(paulineRef, ReadingType.Pauline);
             var firstPassage = reading.Passages.First();
-            var recipient = string.Concat(firstPassage.BookTranslation.Where(char.IsLetter));
+            var recipient = firstPassage.BookTranslation != null ? string.Concat(firstPassage.BookTranslation.Where(char.IsLetter)) : "";
 
             if (reading.Introduction != null)
             {
@@ -149,7 +149,7 @@ namespace Katameros.Repositories
             var subSection = new SubSection(SubSectionType.Catholic);
             Reading reading = await _readingsHelper.MakeReading(catholicRef, ReadingType.Catholic);
             var firstPassage = reading.Passages.First();
-            var author = string.Concat(firstPassage.BookTranslation.Where(char.IsLetter));
+            var author = firstPassage.BookTranslation != null ? string.Concat(firstPassage.BookTranslation.Where(char.IsLetter)) : "";
             reading.Introduction = reading.Introduction?.Replace("$", author);
             reading.Introduction = NumeriseEpistle(reading.Introduction, firstPassage);
 
@@ -237,7 +237,7 @@ namespace Katameros.Repositories
             if (psalmRef != null)
                 readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
             Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
-            var evangelist = string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter));
+            var evangelist = gospel.Passages.First().BookTranslation != null ? string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter)) : "";
             if (psalmRef == null)
                 gospel.Introduction = null;
             else if (gospel.Introduction != null && gospel.Introduction.Contains("$"))
@@ -340,7 +340,7 @@ namespace Katameros.Repositories
                 "Misra",
                 "Nasie",
             };
-            return coptic_months[month];
+            return coptic_months[month - 1];
         }
         private string getOrdinalizeWithLanguage(int day)
         {

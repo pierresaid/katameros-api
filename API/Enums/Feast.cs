@@ -26,5 +26,6 @@
         GreatLentPreparationSaturday = 20,
         GreatLentPreparationSunday = 21,
         Easter = 22,
+        Nayrouz = 23,
     }
 }

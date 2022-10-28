@@ -10,5 +10,6 @@ namespace Katameros.DTOs
         public Bible Bible { get; set; }
         public IEnumerable<Bible> Bibles { get; set; }
         public List<Section> Sections { get; set; }
+        public string CopticDate { get; set; }
     }
 }

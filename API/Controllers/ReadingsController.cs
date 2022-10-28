@@ -23,6 +23,8 @@ namespace Katameros.Controllers
         [Route("gregorian/{date}")]
         public async Task<DayReadings> GetFromGregorianDate(string date, int languageId = -1, int bibleId = -1)
         {
+            if (languageId == 4 && bibleId == -1)
+                bibleId = 5;
             DateTime parsedDate = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
             await _lectionaryRepository.Configure(languageId, bibleId);
