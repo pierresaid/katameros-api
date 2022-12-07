@@ -216,7 +216,7 @@ namespace Katameros.Repositories
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
             subSections.Add(await MakeActs(actsRef));
-            if (_context.LanguageId == 1)
+            if (_context.LanguageId == 1 || _context.LanguageId == 2)
                 subSections.Add(await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month));
             if (gospelRef != null)
                 subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
@@ -290,8 +290,6 @@ namespace Katameros.Repositories
         private async Task<SubSection> MakeSynaxarium(int day, int month)
         {
             SubSection subSection = new SubSection(SubSectionType.Synaxarium);
-
-            var test = _context.CopticDate.ToString("MMM", CultureInfo.CreateSpecificCulture("co"));
 
             var synaxs = await _context.Synaxarium.Where(x => x.LanguageId == _context.LanguageId && x.Day == day && x.Month == month).OrderBy(x => x.Order).ToListAsync();
 
