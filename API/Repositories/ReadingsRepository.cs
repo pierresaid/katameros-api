@@ -216,7 +216,7 @@ namespace Katameros.Repositories
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
             subSections.Add(await MakeActs(actsRef));
-            if (_context.LanguageId == 1 || _context.LanguageId == 2)
+            if (_context.LanguageId == 1 || _context.LanguageId == 2 || _context.LanguageId == 4)
                 subSections.Add(await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month));
             if (gospelRef != null)
                 subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
@@ -293,7 +293,8 @@ namespace Katameros.Repositories
 
             var synaxs = await _context.Synaxarium.Where(x => x.LanguageId == _context.LanguageId && x.Day == day && x.Month == month).OrderBy(x => x.Order).ToListAsync();
 
-            List<Reading> readings = synaxs.Select(x => new Reading(ReadingType.Synaxarium) {
+            List<Reading> readings = synaxs.Select(x => new Reading(ReadingType.Synaxarium)
+            {
                 Title = x.Title,
                 Html = x.Text
             }).ToList();
@@ -307,15 +308,17 @@ namespace Katameros.Repositories
             var first = subSection.Introduction.IndexOf('[');
             var last = subSection.Introduction.LastIndexOf(']');
 
-            Regex regex = new Regex("(?<=\\[).*?(?=\\])");
-            var matches = regex.Matches(subSection.Introduction);
+            if (first != -1 && last != -1) {
+                Regex regex = new Regex("(?<=\\[).*?(?=\\])");
+                var matches = regex.Matches(subSection.Introduction);
 
-            int matchesCount = matches.Count;
+                int matchesCount = matches.Count;
 
-            var opt1 = matchesCount >= 1 ? matches[0]?.Value : null;
-            var opt2 = matchesCount >= 1 ? matches[1]?.Value : null;
+                var opt1 = matchesCount >= 1 ? matches[0]?.Value : null;
+                var opt2 = matchesCount >= 1 ? matches[1]?.Value : null;
 
-            subSection.Introduction = $"{subSection.Introduction.Substring(0, first)}{(day <= 15 ? opt1 : opt2)}{subSection.Introduction.Substring(last + 1, subSection.Introduction.Length - 1 - last)}";
+                subSection.Introduction = $"{subSection.Introduction.Substring(0, first)}{(day <= 15 ? opt1 : opt2)}{subSection.Introduction.Substring(last + 1, subSection.Introduction.Length - 1 - last)}";
+            }
             subSection.Title = await _readingsHelper.GetReadingMeta(ReadingType.Synaxarium, ReadingsMetadata.Title);
             subSection.Readings = readings;
             return subSection;
