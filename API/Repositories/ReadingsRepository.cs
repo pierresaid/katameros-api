@@ -216,7 +216,7 @@ namespace Katameros.Repositories
             subSections.Add(await MakePauline(paulineRef));
             subSections.Add(await MakeCatholic(catholicRef));
             subSections.Add(await MakeActs(actsRef));
-            if (_context.LanguageId == 1 || _context.LanguageId == 2 || _context.LanguageId == 4)
+            if (_context.LanguageId == 1 || _context.LanguageId == 2 || _context.LanguageId == 3 || _context.LanguageId == 4)
                 subSections.Add(await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month));
             if (gospelRef != null)
                 subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
