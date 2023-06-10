@@ -3,7 +3,7 @@
 API for the daily readings in the Coptic Orthodox Church.
 Supports multiple bible versions and langages.
 
-https://katameros.azurewebsites.net/readings/gregorian/03-05-2023?languageId=2
+https://api.katameros.app/readings/gregorian/03-05-2023?languageId=2
 
 Website https://katameros.app/?lang=en
 
@@ -15,7 +15,7 @@ Front end : https://github.com/pierresaid/katameros-web-app
 ## Usage
 
 **BaseUrl**
-`https://katameros.azurewebsites.net/`
+`https://api.katameros.app/`
 
 ### Readings
 
@@ -34,9 +34,9 @@ GET /readings/{calendar}/{date}
 
 **Example Requests**
 ```http
-GET https://katameros.azurewebsites.net/readings/gregorian/03-05-2023?languageId=2
-GET https://katameros.azurewebsites.net/readings/coptic/25-08-1739
-GET https://katameros.azurewebsites.net/readings/gregorian/03-05-2023?languageId=4&bibleId=5
+GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=2
+GET https://api.katameros.app/readings/coptic/25-08-1739
+GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId=5
 ```
 **Languages**
 | Language | ID |
@@ -69,7 +69,7 @@ GET /feasts/{year}/{languageId}
 
 **Example Requests**
 ```http
-GET https://katameros.azurewebsites.net/feasts/2023/2
+GET https://api.katameros.app/feasts/2023/2
 ```
 
 ## Tech Stack:
