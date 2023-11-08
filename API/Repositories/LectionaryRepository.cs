@@ -177,6 +177,8 @@ namespace Katameros.Repositories
                     return "الأحد";
                 case 4:
                     return "Domenica";
+                case 6:
+                    return "Sonntag";
                 default:
                     return "";
             }
