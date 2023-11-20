@@ -2,8 +2,7 @@ using Katameros;
 using Katameros.Factories;
 using Katameros.Repositories;
 using Microsoft.EntityFrameworkCore;
-
-var builder = WebApplication.CreateBuilder(args);
+    var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -14,7 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var localFileConnectionString = "Data Source=KatamerosDatabase.db";
+    options.UseSqlite(localFileConnectionString);
 });
 
 builder.Services.AddCors(options =>
