@@ -1,8 +1,5 @@
 using Katameros;
-using Katameros.Factories;
-using Katameros.Repositories;
-using Microsoft.EntityFrameworkCore;
-    var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -10,12 +7,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<DatabaseContext>(options =>
-{
-    var localFileConnectionString = "Data Source=KatamerosDatabase.db";
-    options.UseSqlite(localFileConnectionString);
-});
 
 builder.Services.AddCors(options =>
 {
@@ -29,14 +20,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<LectionaryRepository>();
-builder.Services.AddScoped<FeastsRepository>();
-builder.Services.AddScoped<LectionaryRepository>();
-builder.Services.AddScoped<ReadingsHelper>();
-builder.Services.AddScoped<ReadingsRepository>();
-builder.Services.AddScoped<FeastsFactory>();
-builder.Services.AddScoped<SpecialCaseFactory>();
-
+builder.Services.AddKatameros();
 
 var app = builder.Build();
 

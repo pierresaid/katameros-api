@@ -32,4 +32,8 @@
 		<None Include="C:\Users\saidp\Desktop\work\new\Katameros\.editorconfig" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Katameros.csproj" />
+	</ItemGroup>
+
 </Project>
