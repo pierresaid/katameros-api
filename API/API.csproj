@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Humanizer" Version="2.14.1" />
+		<PackageReference Include="Katameros" Version="1.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
@@ -30,10 +31,6 @@
 
 	<ItemGroup>
 		<None Include="C:\Users\saidp\Desktop\work\new\Katameros\.editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Core\Katameros.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -18,8 +18,7 @@ public static class StartupExtensions
         services.AddScoped<FeastsFactory>();
         services.AddScoped<SpecialCaseFactory>();
 
-        var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
+        var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         services.AddDbContext<DatabaseContext>(options =>
         {
             var localFileConnectionString = $"Data Source={path}/KatamerosDatabase.db";
