@@ -1,4 +1,4 @@
-﻿﻿# Ⲕⲁⲧⲁⲙⲉⲣⲟⲥ - katameros-api
+# Ⲕⲁⲧⲁⲙⲉⲣⲟⲥ - katameros-api
 
 API for the daily readings in the Coptic Orthodox Church.
 Supports multiple bible versions and langages.
