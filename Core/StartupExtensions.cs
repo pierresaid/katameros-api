@@ -8,7 +8,7 @@ namespace Katameros;
 
 public static class StartupExtensions
 {
-    public static IServiceCollection AddKatameros(this IServiceCollection services)
+    public static IServiceCollection AddKatameros(this IServiceCollection services, string customPath = null)
     {
         services.AddScoped<LectionaryRepository>();
         services.AddScoped<FeastsRepository>();
@@ -19,6 +19,10 @@ public static class StartupExtensions
         services.AddScoped<SpecialCaseFactory>();
 
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        if (customPath != null)
+        {
+            path = customPath;
+        }
         services.AddDbContext<DatabaseContext>(options =>
         {
             var localFileConnectionString = $"Data Source={path}/KatamerosDatabase.db";
