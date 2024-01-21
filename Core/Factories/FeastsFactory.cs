@@ -36,7 +36,7 @@ public partial class FeastsFactory
             new FeastCalc(Feast.PaschaTuesday, -5, ConstructPaschaTuesday),
             new FeastCalc(Feast.TheophanyParamoun, new DateTime(1, 01, 19), null),
             new FeastCalc(Feast.Theophany, new DateTime(1, 01, 20), null),
-            new FeastCalc(Feast.WeddingOfCana, new DateTime(1, 01, 21), null),
+            new FeastCalc(Feast.WeddingOfCana, new LocalDate(1, CopticMonths.Toubah, 13, CalendarSystem.Coptic), null),
             new FeastCalc(Feast.GreatLentPreparationSaturday, -57, ConstructGreatLentPreparationSaturday),
             new FeastCalc(Feast.GreatLentPreparationSunday, -56, ConstructGreatLentPreparationSunday),
             new FeastCalc(Feast.PaschaWednesday, -4, ConstructPaschaWednesday),
