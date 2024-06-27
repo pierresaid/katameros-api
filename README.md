@@ -101,7 +101,7 @@ Or
 - Install [dotnet sdk](https://dotnet.microsoft.com/en-us/download)
 - `dotnet run` in the `API` folder
 
-[Database](https://drive.google.com/drive/folders/18B8KzMw49UfUBqrAjeki-ew_UOTHnNHk?usp=sharing)
+[SQLITE Database](https://github.com/pierresaid/katameros-api/blob/master/Core/KatamerosDatabase.db)
 
 ## Todo
 All the readings references comes from database except the feasts some are missing see [board](https://github.com/pierresaid/katameros-api/projects/1)
