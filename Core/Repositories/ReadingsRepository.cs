@@ -394,8 +394,8 @@ public class ReadingsRepository
             if (last != null
                 && last.Passages.FirstOrDefault().BookId == reading.Passages.FirstOrDefault().BookId
                 && last.Passages.FirstOrDefault().Chapter == reading.Passages.FirstOrDefault().Chapter - 1
-                && reading.Passages.FirstOrDefault().Verses.FirstOrDefault().Number == 1
-                && last.Passages.FirstOrDefault().Verses.LastOrDefault().Number == lastNumber.FirstOrDefault().Number)
+                && reading.Passages.FirstOrDefault().Verses.FirstOrDefault()?.Number == 1
+                && last.Passages.FirstOrDefault().Verses.LastOrDefault()?.Number == lastNumber?.FirstOrDefault()?.Number)
             {
                 last.Passages.LastOrDefault().Verses.AddRange(reading.Passages.SelectMany(x => x.Verses));
                 last.Passages.LastOrDefault().Ref = last.Passages.LastOrDefault().Ref.Split("-")[0] + "-" + reading.Passages.LastOrDefault().Ref.Split(":")[0] + ":" + reading.Passages.LastOrDefault().Ref.Split("-")[1];
@@ -431,8 +431,8 @@ public class ReadingsRepository
             if (last != null
                 && last.Passages.FirstOrDefault().BookId == reading.Passages.FirstOrDefault().BookId
                 && last.Passages.FirstOrDefault().Chapter == reading.Passages.FirstOrDefault().Chapter - 1
-                && reading.Passages.FirstOrDefault().Verses.FirstOrDefault().Number == 1
-                && last.Passages.FirstOrDefault().Verses.LastOrDefault().Number == lastNumber.FirstOrDefault().Number)
+                && reading.Passages.FirstOrDefault().Verses.FirstOrDefault()?.Number == 1
+                && last.Passages.FirstOrDefault().Verses.LastOrDefault()?.Number == lastNumber.FirstOrDefault().Number)
             {
                 last.Passages.LastOrDefault().Verses.AddRange(reading.Passages.SelectMany(x => x.Verses));
                 last.Passages.LastOrDefault().Ref = last.Passages.LastOrDefault().Ref.Split("-")[0] + "-" + reading.Passages.LastOrDefault().Ref.Split(":")[0] + ":" + reading.Passages.LastOrDefault().Ref.Split("-")[1];

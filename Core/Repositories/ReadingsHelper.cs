@@ -44,7 +44,7 @@ public class ReadingsHelper(DatabaseContext _context)
         {
             passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
         }
-        if (versesRef.Contains("end"))
+        if (versesRef.Contains("end") && passage.Verses.Any())
             versesRef = versesRef.Replace("end", passage.Verses.Last().Number.ToString());
         passage.Ref = $"{passage.Chapter}:{versesRef}";
         return passage;
