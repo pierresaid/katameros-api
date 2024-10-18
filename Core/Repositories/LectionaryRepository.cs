@@ -149,6 +149,7 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
             4 => "it",
             5 => "en",
             6 => "de",
+            7 => "pl",
             _ => "",
         };
         return nbSundays.Ordinalize(culture: System.Globalization.CultureInfo.CreateSpecificCulture(langStr));
@@ -170,6 +171,8 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
                 return "ⲕⲩⲣⲓⲁⲕⲏ";
             case 6:
                 return "Sonntag";
+            case 7:
+                return "Niedziela";
             default:
                 return "";
         }
