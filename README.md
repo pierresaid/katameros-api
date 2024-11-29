@@ -46,6 +46,7 @@ GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId
 | Arabic | 3 |
 | Italian | 4 |
 | German | 6 |
+| Polish | 7 |
 
 **Bibles**
 | Id | Name | Language |
@@ -55,7 +56,9 @@ GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId
 | 3 | Arabic | Arabic |
 | 4 | Riveduta 1927 (RIV) | Italian |
 | 5 | CEI 2008 (Psalms RIV) | Italian |
-| 7| Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] | German |
+| 7 | Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] | German |
+| 8 | Uwspółcześniona Biblia gdańska | Polish |
+
 
 ### Feasts
 (Some feasts are missing)
