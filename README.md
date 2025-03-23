@@ -79,7 +79,7 @@ GET https://api.katameros.app/feasts/2023/2
 
 ## Tech Stack:
 - .Net core API
-- SQL Server
+- SQLite
 - Entity Framework
 
 ![image](https://user-images.githubusercontent.com/32095218/160257589-5f66fff0-596e-4b24-a9ad-9741cce3705e.png)
@@ -106,5 +106,3 @@ Or
 
 [SQLITE Database](https://github.com/pierresaid/katameros-api/blob/master/Core/KatamerosDatabase.db)
 
-## Todo
-All the readings references comes from database except the feasts some are missing see [board](https://github.com/pierresaid/katameros-api/projects/1)
