@@ -25,11 +25,9 @@ public partial class FeastsFactory
     {
         var paulineRef = "46.15:23-50";
         var catholicRef = "60.3:15-4:6";
-        var actsRef = "44.2:22-28";
+        var actsRef = "44.2:22-35";
         var psalmRef = "19.118:24,25,27";
         var gospelRef = "43.20:1-18";
-        var psalmRef2 = "19.96:10";
-        var gospelRef2 = "43.20:19-23";
 
         var liturgy = new Section(SectionType.Liturgy);
         var subSections = new List<SubSection>();
@@ -40,7 +38,6 @@ public partial class FeastsFactory
         subSections.Add(await _readingsRepository.MakeCatholic(catholicRef));
         subSections.Add(await _readingsRepository.MakeActs(actsRef));
         subSections.Add(await _readingsRepository.MakePsalmAndGospel(psalmRef, gospelRef));
-        subSections.Add(await _readingsRepository.MakePsalmAndGospel(psalmRef2, gospelRef2));
 
         liturgy.SubSections = subSections;
         return liturgy;
