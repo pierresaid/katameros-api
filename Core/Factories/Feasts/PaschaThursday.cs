@@ -30,7 +30,7 @@ public partial class FeastsFactory
                     await _readingsRepository.MakeOldTestament("23.58:1-9"),
                     await _readingsRepository.MakeOldTestament("26.18:20-32"),
                     await _readingsRepository.MakeActs("44.1:15-20"),
-                    await _readingsRepository.MakePsalmAndGospel("19.54:22,13", "42.22:7-13"),
+                    await _readingsRepository.MakePsalmAndGospelLent("19.55:21,12", "42.22:7-13"),
                 }
             },
             new Section(SectionType.ThirdHour)
@@ -41,7 +41,7 @@ public partial class FeastsFactory
                     await _readingsRepository.MakeOldTestament("73.24:1-11"),
                     await _readingsRepository.MakeOldTestament("38.9:11-14"),
                     await _readingsRepository.MakeOldTestament("20.30:2-6"),
-                    await _readingsRepository.MakePsalmAndGospel("19.93:21,23", "40.26:17-19"),
+                    await _readingsRepository.MakePsalmAndGospelLent("19.94:21,23", "40.26:17-19"),
                 }
             },
             new Section(SectionType.SixthHour)
@@ -51,7 +51,7 @@ public partial class FeastsFactory
                     await _readingsRepository.MakeOldTestament("24.7:2-15"),
                     await _readingsRepository.MakeOldTestament("26.20:39-44"),
                     await _readingsRepository.MakeOldTestament("73.12:13-13:1"),
-                    await _readingsRepository.MakePsalmAndGospel("19.30:19,14", "41.14:12-16"),
+                    await _readingsRepository.MakePsalmAndGospelLent("19.31:18,13", "41.14:12-16"),
                 }
             },
             new Section(SectionType.NinthHour)
@@ -62,18 +62,18 @@ public partial class FeastsFactory
                     await _readingsRepository.MakeOldTestament("23.61:1-7"),
                     await _readingsRepository.MakeOldTestament("1.14:17-20"),
                     await _readingsRepository.MakeOldTestament("18.27:2-28:13"),
-                    await _readingsRepository.MakePsalmAndGospel("19.22:1", "40.26:17-19"),
+                    await _readingsRepository.MakePsalmAndGospelLent("19.23:1,2", "40.26:17-19"),
                 }
             },
-            // todo lakane + liturgie, TODO Gospel intro
+            // todo lakane + liturgie
             new Section(SectionType.EleventhHour)
             {
                 Title = EleventhHour,
                 SubSections = new List<SubSection>() {
                     await _readingsRepository.MakeOldTestament("23.52:13-53:12"),
                     await _readingsRepository.MakeOldTestament("23.19:19-25"),
-                    await _readingsRepository.MakeOldTestament("38.12:11-14:4*@+38.14:6-9"),
-                    await _readingsRepository.MakePsalmAndGospel("19.49:17,18", "43.13:21-30"),
+                    await _readingsRepository.MakeOldTestament("38.12:11-14*@+38.13:1-9*@+38.14:1-4*@+38.14:6-9"),
+                    await _readingsRepository.MakePsalmAndGospelLent("19.50:17,18", "43.13:21-30"),
                 }
             },
             new Section(SectionType.EveFirstHour)

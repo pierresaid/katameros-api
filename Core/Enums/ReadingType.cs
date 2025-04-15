@@ -9,4 +9,5 @@ public enum ReadingType
     Acts = 5,
     Synaxarium = 6,
     Prophecy = 7,
+    GospelLent = 8,
 }

@@ -224,27 +224,36 @@ public class ReadingsRepository
     #endregion
 
     #region Psalm And Gospel
-    public async Task<SubSection> MakePsalmAndGospel(string psalmRef, string gospelRef)
+    public async Task<SubSection> MakePsalmAndGospel(string psalmRef, string gospelRef, bool isJoyous = true)
     {
         SubSection subSection = new SubSection(SubSectionType.PsalmAndGospel);
         List<Reading> readings = new List<Reading>();
 
-        subSection.Introduction = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Introduction);
+        if (isJoyous)
+            subSection.Introduction = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Introduction);
         if (psalmRef != null)
             readings.Add(await _readingsHelper.MakeReading(psalmRef, ReadingType.Psalm));
-        Reading gospel = await _readingsHelper.MakeReading(gospelRef, ReadingType.Gospel);
+        Reading gospel = await _readingsHelper.MakeReading(gospelRef, isJoyous ? ReadingType.Gospel : ReadingType.GospelLent);
         var evangelist = gospel.Passages.First().BookTranslation != null ? string.Concat(gospel.Passages.First().BookTranslation.Where(char.IsLetter)) : "";
         if (psalmRef == null)
             gospel.Introduction = null;
-        else if (gospel.Introduction != null && gospel.Introduction.Contains("$"))
+        else if (gospel.Introduction != null && gospel.Introduction.Contains('$'))
         {
             gospel.Introduction = gospel.Introduction.Replace("$", evangelist);
         }
         readings.Add(gospel);
         subSection.Title = await _readingsHelper.GetSubSectionMeta(SubSectionType.PsalmAndGospel, SubSectionsMetadata.Title);
-        subSection.Introduction = subSection.Introduction?.Replace("$", evangelist);
+        if (isJoyous && subSection.Introduction != null && subSection.Introduction.Contains('$'))
+            subSection.Introduction = subSection.Introduction.Replace("$", evangelist);
+        else if (gospel.Introduction != null && gospel.Introduction.Contains('$'))
+            gospel.Introduction = gospel.Introduction.Replace("$", evangelist);
         subSection.Readings = readings;
         return subSection;
+    }
+
+    public async Task<SubSection> MakePsalmAndGospelLent(string psalmRef, string gospelRef)
+    {
+        return await MakePsalmAndGospel(psalmRef, gospelRef, false);
     }
 
     public async Task<SubSection> MakePsalmsAndGospels(IEnumerable<string> psalmRefs, IEnumerable<string> gospelRefs)

@@ -14,5 +14,6 @@ public enum SectionType
     EveThirdHour = 10,
     EveSixthHour = 11,
     EveNinthHour = 12,
-    EveEleventhHour = 13
+    EveEleventhHour = 13,
+    TwelfthHour = 14,
 }
