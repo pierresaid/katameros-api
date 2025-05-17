@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<Content Include="KatamerosDatabase.db">
 			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
