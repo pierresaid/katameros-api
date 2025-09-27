@@ -21,7 +21,7 @@ public class ContactController
     [HttpPost]
     public async Task<IActionResult> ContactMe([FromBody] ContactMeDto contactMeDto)
     {
-        await _notificationService.SendMessage(
+        var res = await _notificationService.SendMessage(
             $@"
 <u><b>Katameros Contact Form</b></u>
 <b>Email:</b> {contactMeDto.Email}
@@ -29,6 +29,6 @@ public class ContactController
 <b>Message:</b> 
 {contactMeDto.Message}");
 
-        return new OkResult();
+        return res ? new OkResult() : new StatusCodeResult(500);
     }
 }

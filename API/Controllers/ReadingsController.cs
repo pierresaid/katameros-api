@@ -27,12 +27,15 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
 
     [HttpGet]
     [Route("coptic/{date}")]
-    public async Task<DayReadings> GetFromCopticDate(string date)
+    public async Task<DayReadings> GetFromCopticDate(string date, int languageId = -1, int bibleId = -1)
     {
         var parsedCopticDate = LocalDatePattern.Create("dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture).WithCalendar(CalendarSystem.Coptic).Parse(date).Value;
         CopticDateHelper copticDateHelper = new CopticDateHelper(parsedCopticDate.Day, parsedCopticDate.Month, parsedCopticDate.Year);
 
-        await _lectionaryRepository.Configure();
+        if (languageId == 4 && bibleId == -1)
+            bibleId = 4;
+
+        await _lectionaryRepository.Configure(languageId, bibleId);
         var res = await _lectionaryRepository.GetForDay(copticDateHelper.Date);
 
         return res;

@@ -26,7 +26,7 @@ public class NotificationService
         _chatId = _configuration["TelegramChatId"];
 
     }
-    public async Task SendMessage(string message)
+    public async Task<bool> SendMessage(string message)
     {
         var client = _clientFactory.CreateClient("telegram");
 
@@ -36,6 +36,8 @@ public class NotificationService
                 { "parse_mode", "HTML" },
                 { "text", message}
             });
-        await client.GetAsync(query);
+        var res = await client.GetAsync(query);
+
+        return res.IsSuccessStatusCode;
     }
 }
