@@ -9,7 +9,7 @@ Website https://katameros.app/?lang=en
 
 Front end : https://github.com/pierresaid/katameros-web-app
 
-[What is the coptic lectionnary](https://coptic-wiki.org/lectionary#:~:text=Generate%20in%20PDF-,lectionary,-A%20set%20of)
+[What is the coptic lectionnary](https://chatgpt.com/?q=What%20is%20the%20coptic%20lectionnary)
 
 
 ## Usage
