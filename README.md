@@ -48,6 +48,7 @@ GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId
 | German | 6 |
 | Polish | 7 |
 | Spanish | 8 |
+| Dutch | 9 |
 
 **Bibles**
 | Id | Name | Language |
@@ -60,6 +61,7 @@ GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId
 | 7 | Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] | German |
 | 8 | Uwspółcześniona Biblia gdańska | Polish |
 | 9 | Reina Valera 1865 | Spanish |
+| 10 | Stichting Herziening Statenvertaling (HSV) | Dutch |
 
 
 ### Feasts
@@ -70,7 +72,7 @@ GET /feasts/{year}/{languageId}
 | Parameter | Type | Format |
 | --- | --- | --- |
 | year | integer | YYYY |
-| languageId | integer | 1-8 |
+| languageId | integer | 1-9 |
 
 **Example Requests**
 ```http
