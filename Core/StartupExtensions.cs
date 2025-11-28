@@ -25,6 +25,7 @@ public static class StartupExtensions
         }
         services.AddDbContext<DatabaseContext>(options =>
         {
+            // ;Pooling=false in Debug to add data.
             var localFileConnectionString = $"Data Source={path}/KatamerosDatabase.db";
             options.UseSqlite(localFileConnectionString);
         });
