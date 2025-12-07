@@ -17,6 +17,10 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
     {
         if (languageId == 4 && bibleId == -1)
             bibleId = 4;
+
+        if (languageId == 3 && bibleId == -1)
+            bibleId = 11;
+
         DateTime parsedDate = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
         await _lectionaryRepository.Configure(languageId, bibleId);
@@ -34,6 +38,9 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
 
         if (languageId == 4 && bibleId == -1)
             bibleId = 4;
+
+        if (languageId == 3 && bibleId == -1)
+            bibleId = 11;
 
         await _lectionaryRepository.Configure(languageId, bibleId);
         var res = await _lectionaryRepository.GetForDay(copticDateHelper.Date);
