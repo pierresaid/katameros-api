@@ -53,16 +53,16 @@ GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId
 **Bibles**
 | Id | Name | Language |
 | --- | --- | --- |
-| 1 | Louis Segond 1910 (LSG) - 1910, Deutérocanonique : Bible de Jérusalem (JER) - 1973 | French |
+| 1 | Louis Segond 1910 (LSG), Deutérocanonique : Bible de Jérusalem (JER) - 1973 | French |
 | 2 | NKJV | English |
-| 3 | Arabic | Arabic |
+| 3 | Arabic Van Dyck Bible | Arabic |
 | 4 | Riveduta 1927 (RIV) | Italian |
 | 5 | CEI 2008 (Psalms RIV) | Italian |
 | 7 | Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] | German |
 | 8 | Uwspółcześniona Biblia gdańska | Polish |
 | 9 | Reina Valera 1865 | Spanish |
 | 10 | Stichting Herziening Statenvertaling (HSV) | Dutch |
-
+| 11 | Arabic Van Dyck Bible (with diacritical marks) | Arabic |
 
 ### Feasts
 **Endpoint**
