@@ -356,7 +356,12 @@ public class ReadingsRepository
             2 => "en",
             3 => "ar",
             4 => "it",
-            _ => "",
+            6 => "de",
+            7 => "pl",
+            8 => "es",
+            9 => "nl",
+            10 => "th",
+            _ => "en",
         };
         return day.Ordinalize(culture: CultureInfo.CreateSpecificCulture(langStr));
     }
