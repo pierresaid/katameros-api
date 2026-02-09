@@ -34,7 +34,8 @@ public class ReadingsHelper(DatabaseContext _context)
         }
         else
         {
-            query = query.Where(v => v.Number == int.Parse(string.Concat(versesRef)));
+            var verseNumber = int.Parse(string.Concat(versesRef));
+            query = query.Where(v => v.Number == verseNumber);
         }
         var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
 
