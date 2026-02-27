@@ -73,19 +73,18 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
         CopticDateHelper copticDateHelper = new CopticDateHelper(gregorianDate);
 
         var copticDate = copticDateHelper.ToCopticDate();
-        var (lentBeginning, lentEnding) = copticDateHelper.GetGreatLentPeriod();
-        var easterDate = copticDateHelper.GetEasterDate();
-        var easterDaysDiff = (gregorianDate - easterDate).Days;
         int nbSundays = -1;
         _context.CopticDate = copticDate;
 
-        var specialCaseReadings = await _specialCaseFactory.HasSpecialCase(gregorianDate, copticDate, easterDaysDiff);
+        var specialCaseReadings = await _specialCaseFactory.HasSpecialCase(gregorianDate, copticDate);
         if (specialCaseReadings != null)
         {
             await AddBibleInfo(specialCaseReadings);
             return specialCaseReadings;
         }
 
+        var easterDate = copticDateHelper.GetEasterDate();
+        var easterDaysDiff = (gregorianDate - easterDate).Days;
         var dayFeast = _feastsFactory.GetDayFeast(gregorianDate, copticDate, easterDaysDiff);
         if (dayFeast != null)
         {
@@ -97,6 +96,7 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
             }
         }
 
+        var (lentBeginning, lentEnding) = copticDateHelper.GetGreatLentPeriod();
         if (lentBeginning.Ticks <= gregorianDate.Ticks && gregorianDate.Ticks <= lentEnding.Ticks)
         {
             readingRefs = await _readingsRepository.GetGreatLentReadingsRef(gregorianDate, lentBeginning);
@@ -126,7 +126,7 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
         if (dayFeast != null)
             dayReadings.Title = await _feastsFactory.GetFeastTranslation(dayFeast.Feast);
         if (nbSundays != -1)
-            dayReadings.PeriodInfo = $"{ getOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
+            dayReadings.PeriodInfo = $"{ GetOrdinalizeWithLanguage(nbSundays) } { getSundayTranslation() }";
 
         await AddBibleInfo(dayReadings);
         dayReadings.CopticDate = $"{copticDate.Day}/{copticDate.Month}/{copticDate.Year}";
@@ -139,7 +139,7 @@ public class LectionaryRepository(DatabaseContext context, ReadingsRepository re
         dayReadings.Bible = dayReadings.Bibles.FirstOrDefault(x => x.Id == _context.BibleId);
     }
 
-    private  string getOrdinalizeWithLanguage(int nbSundays)
+    private string GetOrdinalizeWithLanguage(int nbSundays)
     {
         string langStr = _context.LanguageId switch
         {

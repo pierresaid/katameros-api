@@ -12,20 +12,16 @@ public class Theophany : ISpecialCase
     private readonly ReadingsHelper _readingsHelper;
 
 
-    private DateTime _gregorianDate;
-    private LocalDate _copticDate;
-    private int _easterDaysDiff;
-
-    public Theophany(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff, ReadingsRepository readingsRepository, ReadingsHelper readingsHelper)
+    private readonly LocalDate _copticDate;
+    
+    public Theophany(LocalDate copticDate, ReadingsRepository readingsRepository, ReadingsHelper readingsHelper)
     {
         _readingsRepository = readingsRepository;
         _readingsHelper = readingsHelper;
-        _gregorianDate = gregorianDate;
         _copticDate = copticDate;
-        _easterDaysDiff = easterDaysDiff;
     }
 
-    public async Task<DayReadings> Process()
+    public async Task<DayReadings?> Process()
     {
         // If Theophany falls on a Monday Paramoun is Friday, Saturday, and Sunday
         // If Theophany falls on a Sunday Paramoun is Friday and Saturday
