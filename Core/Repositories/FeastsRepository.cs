@@ -11,13 +11,6 @@ public class FeastsRepository(DatabaseContext _context, FeastsFactory _feastsFac
         _context.LanguageId = languageId;
     }
 
-    private async Task<FeastDate> CreateFeastDate(Enums.Feast feast, DateTime date)
-    {
-        FeastDate feastDate = new FeastDate() { Id = (int)feast, Date = date };
-        feastDate.Name = await _feastsFactory.GetFeastTranslation(feast);
-        return feastDate;
-    }
-
     public async Task<IEnumerable<FeastDate>> GetFeastsForYear(int year)
     {
         var feasts = _feastsFactory.ComputeFeastsDate(year);

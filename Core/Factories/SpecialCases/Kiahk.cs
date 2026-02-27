@@ -11,19 +11,17 @@ public class KiahkSpecialCase : ISpecialCase
     private readonly ReadingsRepository _readingsRepository;
 
 
-    private DateTime _gregorianDate;
-    private LocalDate _copticDate;
-    private int _easterDaysDiff;
+    private readonly DateTime _gregorianDate;
+    private readonly LocalDate _copticDate;
 
-    public KiahkSpecialCase(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff, ReadingsRepository readingsRepository)
+    public KiahkSpecialCase(DateTime gregorianDate, LocalDate copticDate, ReadingsRepository readingsRepository)
     {
         _readingsRepository = readingsRepository;
         _gregorianDate = gregorianDate;
         _copticDate = copticDate;
-        _easterDaysDiff = easterDaysDiff;
     }
 
-    public async Task<DayReadings> Process()
+    public async Task<DayReadings?> Process()
     {
         // If the day which follows Christmas is on a sunday we read the 30 kiahk annual reading, and not the lessons of the fifth Sunday
         if (_copticDate.Month == CopticMonths.Kiahk && _copticDate.DayOfWeek == IsoDayOfWeek.Sunday && _copticDate.Day == 30)

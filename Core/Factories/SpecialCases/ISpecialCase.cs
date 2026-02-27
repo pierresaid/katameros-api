@@ -7,5 +7,5 @@ public interface ISpecialCase
     /// <summary>
     /// Handle the special case and returns the readings of it applies
     /// </summary>
-    public Task<DayReadings> Process();
+    public Task<DayReadings?> Process();
 }
