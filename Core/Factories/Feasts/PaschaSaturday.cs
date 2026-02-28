@@ -12,7 +12,7 @@ public partial class FeastsFactory
             Title = await GetFeastTranslation(Feast.PaschaSaturday),
             Sections = new List<Section>
             {
-                await _readingsRepository.MakeLitugy("46.15:1-22", "60.1:1-9", "44.3:12-21", "19.3:3,5*@+19.81:7", "40.28:1-20")
+                await _readingsRepository.MakeLitugy("46.15:1-22", "60.1:1-9", "44.3:12-21", "19.3:5,3*@+19.82:8", "40.28:1-20")
             }
         };
         return dayReadings;
