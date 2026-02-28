@@ -27,4 +27,5 @@ public enum Feast
     GreatLentPreparationSunday = 21,
     Easter = 22,
     Nayrouz = 23,
+    PaschaSaturday = 24,
 }
