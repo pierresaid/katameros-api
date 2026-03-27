@@ -17,9 +17,6 @@ public partial class FeastsFactory
         var EleventhHour = await _readingsHelper.GetSectionMeta(SectionType.EleventhHour, SectionsMetadata.Title);
         var TwelfthHour = await _readingsHelper.GetSectionMeta(SectionType.TwelfthHour, SectionsMetadata.Title);
 
-        var EveOf = await _readingsHelper.GetSentence(Sentence.EveOf);
-        var NextDay = await GetFeastTranslation(Feast.PaschaFriday);
-
         dayReadings.Sections = new List<Section>() {
             new Section(SectionType.FirstHour)
             {
