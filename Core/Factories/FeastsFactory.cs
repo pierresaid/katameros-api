@@ -57,7 +57,11 @@ public partial class FeastsFactory
             if (feastCalc.EasterDaysDiff.HasValue && feastCalc.EasterDaysDiff == easterDaysDiff)
                 return feastCalc;
             else if (feastCalc.CopticDate.HasValue && feastCalc.CopticDate.Value.Day == copticDate.Day && feastCalc.CopticDate.Value.Month == copticDate.Month)
+            {
+                if (easterDaysDiff >= -8 && easterDaysDiff <= 0)
+                    continue;
                 return feastCalc;
+            }
             else if (feastCalc.GregorianDate.HasValue && feastCalc.GregorianDate.Value.Day == gregorianDate.Day && feastCalc.GregorianDate.Value.Month == gregorianDate.Month)
                 return feastCalc;
             else if (feastCalc.Validator != null && feastCalc.Validator(gregorianDate, copticDate))
