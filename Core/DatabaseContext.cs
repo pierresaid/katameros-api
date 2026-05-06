@@ -28,6 +28,8 @@ public class DatabaseContext : DbContext
             .HasKey(t => new { t.ReadingId, t.ReadingsMetadatasId, t.LanguageId });
         modelBuilder.Entity<SentencesTranslation>()
             .HasKey(t => new { t.SentenceId, t.LanguageId });
+        modelBuilder.Entity<VerseRefMapping>()
+            .HasKey(m => new { m.VersificationSchemeId, m.BookId, m.Chapter });
     }
     public DbSet<Language> Languages { get; set; }
     public DbSet<Bible> Bibles { get; set; }
@@ -52,5 +54,7 @@ public class DatabaseContext : DbContext
     public DbSet<Sentences> Sentences { get; set; }
     public DbSet<SentencesTranslation> SentencesTranslations { get; set; }
     public DbSet<Synaxarium> Synaxarium { get; set; }
+    public DbSet<VerseRefMapping> VerseRefMappings { get; set; }
+    public DbSet<VersificationScheme> VersificationSchemes { get; set; }
 
 }

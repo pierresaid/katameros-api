@@ -1,5 +1,6 @@
 ﻿using Katameros.DTOs;
 using Katameros.Enums;
+using Verse = Katameros.Models.Verse;
 
 namespace Katameros.Repositories;
 
@@ -13,15 +14,25 @@ public class ReadingsHelper(DatabaseContext _context)
         var splittedPassageRef = passageRef.Split('.', ':');
         passage.BookId = int.Parse(splittedPassageRef[0]);
         passage.Chapter = int.Parse(splittedPassageRef[1]);
-        List<int> splittedVersesComma = null;
+
+        // Different Bibles can number Psalm verses differently, apply the per-chapter offset if mapped.
+        int offset = 0;
+        var schemeId = (await _context.Bibles.FindAsync(_context.BibleId))?.VersificationSchemeId;
+        if (schemeId.HasValue)
+        {
+            offset = (await _context.VerseRefMappings.FindAsync(schemeId.Value, passage.BookId, passage.Chapter))?.Offset ?? 0;
+        }
+
+        List<int> lectionaryComma = null;
 
         var query = _context.Verses.Where(v => v.BibleId == _context.BibleId && v.BookId == passage.BookId && v.Chapter == passage.Chapter);
         string versesRef = splittedPassageRef[2];
         if (versesRef.Contains('-'))
         {
             var splittedVerses = versesRef.Split('-');
-            int from = int.Parse(string.Concat(splittedVerses[0]));
-            int to = splittedVerses[1] == "end" ? -1 : int.Parse(string.Concat(splittedVerses[1]));
+            int fromLect = int.Parse(string.Concat(splittedVerses[0]));
+            int from = fromLect + offset;
+            int to = splittedVerses[1] == "end" ? -1 : int.Parse(string.Concat(splittedVerses[1])) + offset;
             if (to == -1) // To the end
                 query = query.Where(v => v.Number >= from);
             else
@@ -29,21 +40,37 @@ public class ReadingsHelper(DatabaseContext _context)
         }
         else if (versesRef.Contains(','))
         {
-            splittedVersesComma = versesRef.Split(',').Select(s => int.Parse(s)).ToList();
-            query = query.Where(v => splittedVersesComma.Contains(v.Number));
+            lectionaryComma = versesRef.Split(',').Select(s => int.Parse(s)).ToList();
+            var bibleSideComma = lectionaryComma.Select(n => n + offset).ToList();
+            query = query.Where(v => bibleSideComma.Contains(v.Number));
         }
         else
         {
-            var verseNumber = int.Parse(string.Concat(versesRef));
+            var verseNumber = int.Parse(string.Concat(versesRef)) + offset;
             query = query.Where(v => v.Number == verseNumber);
         }
         var bookTranslation = (await _context.BooksTranslations.FindAsync(passage.BookId, _context.LanguageId))?.Text;
 
         passage.BookTranslation = bookTranslation;
         passage.Verses = query.ToList();
+
+        // Remap to lectionary numbering for consistent client display across Bibles.
+        if (offset != 0)
+        {
+            passage.Verses = passage.Verses.Select(v => new Verse
+            {
+                Id = v.Id,
+                BibleId = v.BibleId,
+                BookId = v.BookId,
+                Chapter = v.Chapter,
+                Number = v.Number - offset,
+                Text = v.Text
+            }).ToList();
+        }
+
         if (versesRef.Contains(','))
         {
-            passage.Verses = passage.Verses.OrderBy(v => splittedVersesComma.FindIndex(s => s == v.Number)).ToList();
+            passage.Verses = passage.Verses.OrderBy(v => lectionaryComma.FindIndex(s => s == v.Number)).ToList();
         }
         if (versesRef.Contains("end") && passage.Verses.Any())
             versesRef = versesRef.Replace("end", passage.Verses.Last().Number.ToString());

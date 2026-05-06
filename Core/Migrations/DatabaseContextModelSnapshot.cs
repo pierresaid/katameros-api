@@ -14,7 +14,7 @@ namespace Katameros.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
 
             modelBuilder.Entity("Katameros.Models.AnnualReading", b =>
                 {
@@ -97,6 +97,9 @@ namespace Katameros.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("VersificationSchemeId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -610,6 +613,40 @@ namespace Katameros.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Verses");
+                });
+
+            modelBuilder.Entity("Katameros.Models.VerseRefMapping", b =>
+                {
+                    b.Property<int>("VersificationSchemeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Chapter")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Offset")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("VersificationSchemeId", "BookId", "Chapter");
+
+                    b.ToTable("VerseRefMappings");
+                });
+
+            modelBuilder.Entity("Katameros.Models.VersificationScheme", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VersificationSchemes");
                 });
 #pragma warning restore 612, 618
         }

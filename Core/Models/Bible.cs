@@ -9,4 +9,5 @@ public class Bible
     public string Name { get; set; }
     [Required]
     public int LanguageId { get; set; }
+    public int? VersificationSchemeId { get; set; }
 }
