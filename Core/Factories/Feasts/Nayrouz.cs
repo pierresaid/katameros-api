@@ -9,7 +9,7 @@ public partial class FeastsFactory
     private async Task<DayReadings> ConstructNayrouz()
     {
         var dayReadings = await _readingsRepository.GetReadingsForAnnual(new LocalDate(1, CopticMonths.Thout, 1, CalendarSystem.Coptic));
-        dayReadings.Title = "Nayrouz";
+        dayReadings.Title = await GetFeastTranslation(Feast.Nayrouz);
         //DayReadings dayReadings = new DayReadings
         //{
         //    Title = await GetFeastTranslation(Feast.Nayrouz),
