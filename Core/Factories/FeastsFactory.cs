@@ -21,6 +21,10 @@ public partial class FeastsFactory
             new FeastCalc(Feast.Christmas, new DateTime(1, 01, 07), ConstructChristmas),
             new FeastCalc(Feast.NativityParamoun, IsNativityParamoun, GetNativityParamounDate, ConstructNativityParamoun),
             new FeastCalc(Feast.Ascension, 39, null),
+            // Kept before the Coptic-date feasts: when Pentecost coincides with
+            // one of them (e.g. the Entrance into Egypt), the Lord's feast wins
+            new FeastCalc(Feast.Pentecost, 49, null),
+            new FeastCalc(Feast.ThomasSunday, 7, null),
             new FeastCalc(Feast.LazarusSaturday, -8, ConstructLazarusSaturday),
             new FeastCalc(Feast.TempleEntrance, new LocalDate(1, 6, CopticMonths.Baramoudah, CalendarSystem.Coptic), ConstructTempleEntrance),
             new FeastCalc(Feast.EgyptEntrance, new LocalDate(1, CopticMonths.Bashans, 24, CalendarSystem.Coptic), ConstructEgyptEntrance),
@@ -47,6 +51,10 @@ public partial class FeastsFactory
             new FeastCalc(Feast.PaschaSaturday, -1, ConstructPaschaSaturday),
             new FeastCalc(Feast.Easter, 0, ConstructEaster),
             new FeastCalc(Feast.Nayrouz, new LocalDate(1, CopticMonths.Thout, 1, CalendarSystem.Coptic), ConstructNayrouz),
+            new FeastCalc(Feast.Circumcision, new LocalDate(1, CopticMonths.Toubah, 6, CalendarSystem.Coptic), null),
+            new FeastCalc(Feast.Apostles, new LocalDate(1, CopticMonths.Abib, 5, CalendarSystem.Coptic), null),
+            new FeastCalc(Feast.Transfiguration, new LocalDate(1, CopticMonths.Misra, 13, CalendarSystem.Coptic), null),
+            new FeastCalc(Feast.StMaryAssumption, new LocalDate(1, CopticMonths.Misra, 16, CalendarSystem.Coptic), null),
         ];
     }
     public FeastCalc GetDayFeast(DateTime gregorianDate, LocalDate copticDate, int easterDaysDiff)

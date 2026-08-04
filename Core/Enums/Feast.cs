@@ -28,4 +28,10 @@ public enum Feast
     Easter = 22,
     Nayrouz = 23,
     PaschaSaturday = 24,
+    Pentecost = 25,
+    Circumcision = 26,
+    Transfiguration = 27,
+    ThomasSunday = 28,
+    Apostles = 29,
+    StMaryAssumption = 30,
 }
