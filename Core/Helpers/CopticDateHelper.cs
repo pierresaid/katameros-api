@@ -120,4 +120,20 @@ public class CopticDateHelper
         var localDate = copticDate.WithCalendar(CalendarSystem.Gregorian);
         return new DateTime(localDate.Year, localDate.Month, localDate.Day);
     }
+
+    /// <summary>
+    /// Converts a Coptic month/day to its Gregorian date within the given
+    /// Gregorian year. The Coptic year in effect on Jan 1 started the previous
+    /// September, so dates in the early Coptic months (Sep-Dec) resolve to the
+    /// previous Gregorian year and need the next Coptic year instead.
+    /// </summary>
+    public static DateTime ResolveInGregorianYear(int copticMonth, int copticDay, int year)
+    {
+        var copticYear = LocalDate.FromDateTime(new DateTime(year, 1, 1), CalendarSystem.Gregorian)
+                                  .WithCalendar(CalendarSystem.Coptic).Year;
+        var gregorian = ToGregorianDate(new LocalDate(copticYear, copticMonth, copticDay, CalendarSystem.Coptic));
+        if (gregorian.Year != year)
+            gregorian = ToGregorianDate(new LocalDate(copticYear + 1, copticMonth, copticDay, CalendarSystem.Coptic));
+        return gregorian;
+    }
 }

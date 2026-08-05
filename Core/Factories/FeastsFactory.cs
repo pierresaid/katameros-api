@@ -97,12 +97,7 @@ public partial class FeastsFactory
                 feasts.Add(ValueTuple.Create(feastCalc.Feast, easterDate.AddDays(feastCalc.EasterDaysDiff.Value)));
             else if (feastCalc.CopticDate.HasValue)
             {
-                // The Coptic year in effect on Jan 1 started the previous September,
-                // so feasts in the early Coptic months (Sep-Dec) resolve to the
-                // previous Gregorian year; retry with the next Coptic year.
-                var gregorian = CopticDateHelper.ToGregorianDate(new LocalDate(copticDate.Year, feastCalc.CopticDate.Value.Month, feastCalc.CopticDate.Value.Day, CalendarSystem.Coptic));
-                if (gregorian.Year != year)
-                    gregorian = CopticDateHelper.ToGregorianDate(new LocalDate(copticDate.Year + 1, feastCalc.CopticDate.Value.Month, feastCalc.CopticDate.Value.Day, CalendarSystem.Coptic));
+                var gregorian = CopticDateHelper.ResolveInGregorianYear(feastCalc.CopticDate.Value.Month, feastCalc.CopticDate.Value.Day, year);
 
                 // Coptic-date feasts falling within Holy Week are not celebrated
                 // that year (same rule as GetDayFeast)

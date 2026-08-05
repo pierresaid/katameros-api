@@ -12,10 +12,12 @@ public static class StartupExtensions
     {
         services.AddScoped<LectionaryRepository>();
         services.AddScoped<FeastsRepository>();
+        services.AddScoped<FastsRepository>();
         services.AddScoped<LectionaryRepository>();
         services.AddScoped<ReadingsHelper>();
         services.AddScoped<ReadingsRepository>();
         services.AddScoped<FeastsFactory>();
+        services.AddScoped<FastsFactory>();
         services.AddScoped<SpecialCaseFactory>();
 
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

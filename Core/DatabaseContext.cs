@@ -20,6 +20,8 @@ public class DatabaseContext : DbContext
             .HasKey(t => new { t.BookId, t.LanguageId });
         modelBuilder.Entity<FeastsTranslation>()
             .HasKey(t => new { t.FeastId, t.LanguageId });
+        modelBuilder.Entity<FastsTranslation>()
+            .HasKey(t => new { t.FastId, t.LanguageId });
         modelBuilder.Entity<SectionsMetadatasTranslation>()
             .HasKey(t => new { t.SectionsId, t.SectionsMetadatasId, t.LanguageId });
         modelBuilder.Entity<SubSectionsMetadatasTranslation>()
@@ -37,6 +39,8 @@ public class DatabaseContext : DbContext
     public DbSet<BooksTranslation> BooksTranslations { get; set; }
     public DbSet<Feast> Feasts { get; set; }
     public DbSet<FeastsTranslation> FeastsTranslations { get; set; }
+    public DbSet<Fast> Fasts { get; set; }
+    public DbSet<FastsTranslation> FastsTranslations { get; set; }
     public DbSet<Verse> Verses { get; set; }
     public DbSet<AnnualReading> AnnualReadings { get; set; }
     public DbSet<SundayReading> SundayReadings { get; set; }
