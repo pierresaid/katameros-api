@@ -21,12 +21,14 @@ builder.Services.AddScoped<NotificationService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("_Origins", builder =>
+    options.AddPolicy("_Origins", policy =>
     {
 #if DEBUG
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 #else
-        builder.WithOrigins("https://katameros.app", "https://katameros.netlify.app", "https://new-katameros.netlify.app", "https://copte.fr").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("https://katameros.app")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
 #endif
     });
 });
@@ -43,11 +45,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.UseCors("_Origins");
-
+app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
