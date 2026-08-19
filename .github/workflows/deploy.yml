@@ -1,31 +1,40 @@
-name: Deploy API to Azure
+name: Deploy to Azure Web App
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   workflow_dispatch:
 
-concurrency:
-  group: api-deploy
-  cancel-in-progress: false
+env:
+  AZURE_WEBAPP_NAME: katamerosapi
+  DOTNET_VERSION: '10.0.x'
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore API/API.csproj
+
+      - name: Build
+        run: dotnet build API/API.csproj --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish API/API.csproj -c Release -o publish
+        run: dotnet publish API/API.csproj --configuration Release --no-build --output ${{ github.workspace }}/publish
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: katameros
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: publish
+          package: ${{ github.workspace }}/publish
