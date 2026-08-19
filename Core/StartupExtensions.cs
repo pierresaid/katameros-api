@@ -27,8 +27,10 @@ public static class StartupExtensions
         }
         services.AddDbContext<DatabaseContext>(options =>
         {
-            // ;Pooling=false in Debug to add data.
-            var localFileConnectionString = $"Data Source={path}/KatamerosDatabase.db";
+            // ;Pooling=false in Debug to add data (and drop Mode=ReadOnly).
+            // ReadOnly keeps SQLite from leaving -wal/-shm lock files next to the
+            // bundled database, which corrupt the fresh copy on the next deployment.
+            var localFileConnectionString = $"Data Source={path}/KatamerosDatabase.db;Mode=ReadOnly";
             options.UseSqlite(localFileConnectionString);
         });
 
