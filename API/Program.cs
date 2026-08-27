@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
 #if DEBUG
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 #else
-        policy.WithOrigins("https://katameros.app", "https://embedded.katameros.app")
+        policy.WithOrigins("https://katameros.app", "https://embedded.katameros.app", "https://dev.katameros.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
 #endif
