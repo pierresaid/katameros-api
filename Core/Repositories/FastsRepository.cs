@@ -16,12 +16,17 @@ public class FastsRepository(DatabaseContext _context, FastsFactory _fastsFactor
         var fasts = _fastsFactory.ComputeFastPeriods(year);
         var fastsTranslations = await GetFastsTranslations();
 
-        return fasts.Select(x => new FastPeriod()
+        return fasts.Select(x =>
         {
-            Id = (int)x.Fast,
-            Start = x.Start,
-            End = x.End,
-            Name = fastsTranslations.Where(t => t.FastId == (int)x.Fast).FirstOrDefault()?.Text
+            var translation = fastsTranslations.Where(t => t.FastId == (int)x.Fast).FirstOrDefault();
+            return new FastPeriod()
+            {
+                Id = (int)x.Fast,
+                Start = x.Start,
+                End = x.End,
+                Name = translation?.Text,
+                Description = translation?.Description
+            };
         });
     }
 
