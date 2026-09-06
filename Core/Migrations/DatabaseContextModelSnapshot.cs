@@ -138,6 +138,41 @@ namespace Katameros.Migrations
                     b.ToTable("BooksTranslations");
                 });
 
+            modelBuilder.Entity("Katameros.Models.Fast", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fasts");
+                });
+
+            modelBuilder.Entity("Katameros.Models.FastsTranslation", b =>
+                {
+                    b.Property<int>("FastId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("FastId", "LanguageId");
+
+                    b.ToTable("FastsTranslations");
+                });
+
             modelBuilder.Entity("Katameros.Models.Feast", b =>
                 {
                     b.Property<int>("Id")
@@ -160,6 +195,9 @@ namespace Katameros.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -573,6 +611,9 @@ namespace Katameros.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("StoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")

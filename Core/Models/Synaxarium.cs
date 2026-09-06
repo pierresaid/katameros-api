@@ -9,4 +9,9 @@ public class Synaxarium
     public int Order { get; set; }
     public string Text { get; set; }
     public int LanguageId { get; set; }
+    /// <summary>
+    /// Language-independent identifier shared by all translations of the same
+    /// synaxarium story. Encoded as CopticMonth * 10000 + CopticDay * 100 + sequence.
+    /// </summary>
+    public int? StoryId { get; set; }
 }
