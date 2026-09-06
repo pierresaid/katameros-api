@@ -10,6 +10,10 @@ public class Reading
     public string Conclusion { get; set; }
     public List<Passage> Passages { get; set; }
     public string Html { get; set; }
+    /// <summary>
+    /// For synaxarium readings: language-independent id shared by all translations of the same story.
+    /// </summary>
+    public int? StoryId { get; set; }
     public Reading(ReadingType readingType)
     {
         Id = (int)readingType;

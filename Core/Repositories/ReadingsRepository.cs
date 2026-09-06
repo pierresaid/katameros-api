@@ -301,7 +301,8 @@ public class ReadingsRepository
         List<Reading> readings = synaxs.Select(x => new Reading(ReadingType.Synaxarium)
         {
             Title = x.Title,
-            Html = x.Text
+            Html = x.Text,
+            StoryId = x.StoryId
         }).ToList();
 
 
