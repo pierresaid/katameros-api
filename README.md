@@ -1,110 +1,79 @@
 # Ⲕⲁⲧⲁⲙⲉⲣⲟⲥ - katameros-api
 
 API for the daily readings in the Coptic Orthodox Church.
-Supports multiple bible versions and langages.
+Supports multiple bible versions and languages.
 
 https://api.katameros.app/readings/gregorian/03-05-2023?languageId=2
 
-Website https://katameros.app/?lang=en
+Website https://katameros.app/en/
 
 Front end : https://github.com/pierresaid/katameros-web-app
 
-[What is the coptic lectionnary](https://chatgpt.com/?q=What%20is%20the%20coptic%20lectionnary)
-
+[What is the coptic lectionary](https://chatgpt.com/?q=What%20is%20the%20coptic%20lectionary)
 
 ## Usage
 
-**BaseUrl**
-`https://api.katameros.app/`
+Base URL: `https://api.katameros.app/`
 
 ### Readings
 
-**Endpoint**
 ```http
-GET /readings/{calendar}/{date}
+GET /readings/gregorian/{date}
+GET /readings/coptic/{date}
 ```
 
-**Parameters**
-| Parameter | Type | Required | Description |
-| --- | --- | --- | --- |
-| calendar | string | Yes | The calendar used for the date. Can be either gregorian or coptic. |
-| date | string | Yes | The date in the format `dd-mm-yyyy`. |
-| languageId | integer | No | The ID of the language to use. Can be either 1 for French, 2 for English, 3 for Arabic, 4 for Italian. If no languageId is specified, the API will default to French. |
-| bibleId | integer | No | The ID of the Bible to use. |
+- `date`: `dd-MM-yyyy`, a Gregorian date on `/gregorian`, a Coptic date on `/coptic`.
+- `languageId` (optional): see [Languages and Bibles](#languages-and-bibles). Defaults to French (1).
+- `bibleId` (optional): a Bible of the requested language. Defaults to the language's default Bible.
 
-**Example Requests**
-```http
-GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=2
-GET https://api.katameros.app/readings/coptic/25-08-1739
-GET https://api.katameros.app/readings/gregorian/03-05-2023?languageId=4&bibleId=5
-```
-**Languages**
-| Language | ID |
-| --- | --- |
-| French | 1 |
-| English | 2 |
-| Arabic | 3 |
-| Italian | 4 |
-| German | 6 |
-| Polish | 7 |
-| Spanish | 8 |
-| Dutch | 9 |
+### Feasts and fasts
 
-**Bibles**
-| Id | Name | Language |
-| --- | --- | --- |
-| 1 | Louis Segond 1910 (LSG), Deutérocanonique : Bible de Jérusalem (JER) - 1973 | French |
-| 2 | NKJV | English |
-| 3 | Arabic Van Dyck Bible | Arabic |
-| 4 | Riveduta 1927 (RIV) | Italian |
-| 5 | CEI 2008 (Psalms RIV) | Italian |
-| 7 | Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] | German |
-| 8 | Uwspółcześniona Biblia gdańska | Polish |
-| 9 | Reina Valera 1865 | Spanish |
-| 10 | Stichting Herziening Statenvertaling (HSV) | Dutch |
-| 11 | Arabic Van Dyck Bible (with diacritical marks) | Arabic |
-
-### Feasts
-**Endpoint**
 ```http
 GET /feasts/{year}/{languageId}
+GET /fasts/{year}/{languageId}
 ```
-| Parameter | Type | Format |
+
+- `year`: a Gregorian year, e.g. `2026`.
+- `languageId`: see [Languages and Bibles](#languages-and-bibles).
+
+https://api.katameros.app/feasts/2026/2
+
+https://api.katameros.app/fasts/2026/2
+
+## Languages and Bibles
+
+| languageId | Language | bibleId |
 | --- | --- | --- |
-| year | integer | YYYY |
-| languageId | integer | 1-9 |
+| 1 | French | 1 Louis Segond 1910 |
+| 2 | English | 2 NKJV |
+| 3 | Arabic | 11 Van Dyck, with diacritics (default) · 3 Van Dyck, without diacritics |
+| 4 | Italian | 4 CEI 1974 (default) · 5 CEI 2008 (Psalms RIV) |
+| 6 | German | 7 Einheitsübersetzung der Heiligen Schrift (1980) [Quadro-Bibel 5.0] |
+| 7 | Polish | 8 Uwspółcześniona Biblia gdańska |
+| 8 | Spanish | 9 Reina Valera 1865 |
+| 9 | Dutch | 10 Stichting Herziening Statenvertaling (HSV) |
+| 10 | Thai | 12 Thai Standard Version (THSV) |
 
-**Example Requests**
-```http
-GET https://api.katameros.app/feasts/2023/2
-```
+The Synaxarium is only included in French, English, Arabic, Italian and Dutch.
 
-## Tech Stack:
-- .Net core API
-- SQLite
-- Entity Framework
+## Database
 
-![image](https://user-images.githubusercontent.com/32095218/160257589-5f66fff0-596e-4b24-a9ad-9741cce3705e.png)
-> Database diagram
+The lectionary tables, Bible texts, Synaxarium, feasts and fasts are in one SQLite file, [`Core/KatamerosDatabase.db`](https://github.com/pierresaid/katameros-api/raw/master/Core/KatamerosDatabase.db).
 
-*This is not the complete diagram as there are also other tables for translations and metadata.*
-*See full schema in /Database folder*
+## Motivation
 
-
-## Motivation :
-
-This project was heavily inspired by the online coptic lectionnary in php. ([Just like this site](https://st-takla.org/zJ/index.php?option=com_katamaros&sm=3-3&c=&tht=&dbl=en&Itemid=3))
+This project was heavily inspired by the online Coptic lectionary in PHP. ([Just like this site](https://st-takla.org/zJ/index.php?option=com_katamaros&sm=3-3&c=&tht=&dbl=en&Itemid=3))
 
 I wanted to re-create this project in an API to be able to use the daily readings on different clients.
 
-
 ## Run the project
 
-Either use [VisualStudio](https://visualstudio.microsoft.com/) and open the project in `API/Katameros.sln`
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0), then:
 
-Or 
-- Install [dotnet sdk](https://dotnet.microsoft.com/en-us/download)
-- `dotnet run` in the `API` folder
+```bash
+git clone https://github.com/pierresaid/katameros-api.git
+cd katameros-api/API
+dotnet run
+```
 
-[SQLITE Database](https://github.com/pierresaid/katameros-api/blob/master/Core/KatamerosDatabase.db)
-
+The API listens on http://localhost:5241, with Swagger UI at http://localhost:5241/swagger. You can also open `Katameros.sln` in [Visual Studio](https://visualstudio.microsoft.com/).
