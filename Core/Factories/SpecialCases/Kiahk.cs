@@ -39,7 +39,7 @@ public class KiahkSpecialCase : ISpecialCase
         // This means that the month of Kiyahk would be left with only three Sundays
         // The fifth Sunday of Hatour is borrowed and added to the three Sundays of Kiyahk
         var paramounDate = new DateTime(_gregorianDate.Year + 1, 1, 6); // The next (gregorian year's) paramoun
-        if (paramounDate.DayOfWeek == DayOfWeek.Sunday && _gregorianDate.DayOfWeek == DayOfWeek.Sunday)
+        if (_gregorianDate.Month != 1 && paramounDate.DayOfWeek == DayOfWeek.Sunday && _gregorianDate.DayOfWeek == DayOfWeek.Sunday)
         {
             var nbSundays = CopticDateHelper.NumberOfSundaysElapsed(_copticDate);
             if (_copticDate.Month == CopticMonths.Hatour && CopticDateHelper.IsLastSundayOfMonth(_copticDate))
