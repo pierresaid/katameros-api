@@ -4,6 +4,11 @@ namespace Helpers.Katameros;
 
 public class CopticDateHelper
 {
+    public const int MinSupportedYear = 285;
+    public const int MaxSupportedYear = 9998;
+
+    public static bool IsSupportedYear(int year) => year >= MinSupportedYear && year <= MaxSupportedYear;
+
     /// <summary>
     /// The Date in Gregorian format
     /// </summary>

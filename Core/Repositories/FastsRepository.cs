@@ -6,9 +6,12 @@ namespace Katameros.Repositories;
 public class FastsRepository(DatabaseContext _context, FastsFactory _fastsFactory)
 {
 
-    public void Configure(int languageId = 1)
+    public async Task<bool> Configure(int languageId = 1)
     {
+        if (!await _context.Languages.AnyAsync(l => l.Id == languageId))
+            return false;
         _context.LanguageId = languageId;
+        return true;
     }
 
     public async Task<IEnumerable<FastPeriod>> GetFastsForYear(int year)
