@@ -12,10 +12,8 @@ namespace Katameros.Controllers;
 [ApiController]
 public class ReadingsController(LectionaryRepository _lectionaryRepository) : ControllerBase
 {
-    private static readonly string[] GregorianFormats = ["d-M-yyyy", "yyyy-M-d"];
-
     private static readonly LocalDatePattern CopticPattern =
-        LocalDatePattern.Create("d-M-yyyy", CultureInfo.InvariantCulture).WithCalendar(CalendarSystem.Coptic);
+        LocalDatePattern.Create("dd-MM-yyyy", CultureInfo.InvariantCulture).WithCalendar(CalendarSystem.Coptic);
 
     [HttpGet]
     [Route("gregorian/{date}")]
@@ -27,7 +25,7 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
         if (languageId == 3 && bibleId == -1)
             bibleId = 11;
 
-        if (!DateTime.TryParseExact(ToAsciiDigits(date), GregorianFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        if (!DateTime.TryParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             return InvalidDate(date, "dd-MM-yyyy, for example 24-12-2026");
 
         return await GetReadings(parsedDate, languageId, bibleId);
@@ -37,7 +35,7 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
     [Route("coptic/{date}")]
     public async Task<ActionResult<DayReadings>> GetFromCopticDate(string date, int languageId = -1, int bibleId = -1)
     {
-        var parseResult = CopticPattern.Parse(ToAsciiDigits(date));
+        var parseResult = CopticPattern.Parse(date);
         if (!parseResult.Success)
             return InvalidDate(date, "dd-MM-yyyy in the Coptic calendar, for example 13-04-1743");
 
@@ -69,7 +67,4 @@ public class ReadingsController(LectionaryRepository _lectionaryRepository) : Co
     private ObjectResult InvalidDate(string date, string expectedFormat) =>
         Problem(statusCode: StatusCodes.Status400BadRequest, title: "Invalid date",
             detail: $"'{date}' is not a valid date. Use {expectedFormat}.");
-
-    private static string ToAsciiDigits(string value) =>
-        string.Concat(value.Select(c => char.IsDigit(c) ? (char)('0' + (int)char.GetNumericValue(c)) : c));
 }
