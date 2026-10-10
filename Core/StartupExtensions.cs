@@ -13,6 +13,7 @@ public static class StartupExtensions
         services.AddScoped<LectionaryRepository>();
         services.AddScoped<FeastsRepository>();
         services.AddScoped<FastsRepository>();
+        services.AddScoped<SynaxariumRepository>();
         services.AddScoped<LectionaryRepository>();
         services.AddScoped<ReadingsHelper>();
         services.AddScoped<ReadingsRepository>();

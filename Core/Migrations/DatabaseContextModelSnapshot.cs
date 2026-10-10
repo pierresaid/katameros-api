@@ -629,6 +629,29 @@ namespace Katameros.Migrations
                     b.ToTable("Synaxarium");
                 });
 
+            modelBuilder.Entity("Katameros.Models.SynaxariumStory", b =>
+                {
+                    b.Property<int>("StoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Day")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("StoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("SynaxariumStories");
+                });
+
             modelBuilder.Entity("Katameros.Models.Verse", b =>
                 {
                     b.Property<int>("Id")
