@@ -212,8 +212,13 @@ public class ReadingsRepository
         subSections.Add(await MakePauline(paulineRef));
         subSections.Add(await MakeCatholic(catholicRef));
         subSections.Add(await MakeActs(actsRef));
-        if (_context.LanguageId == 1 || _context.LanguageId == 2 || _context.LanguageId == 3 || _context.LanguageId == 4 || _context.LanguageId == 9)
-            subSections.Add(await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month));
+        if (_context.LanguageId == 1 || _context.LanguageId == 2 || _context.LanguageId == 3 || _context.LanguageId == 4 || _context.LanguageId == 6 || _context.LanguageId == 9)
+        {
+            var synaxarium = await MakeSynaxarium(_context.CopticDate.Day, _context.CopticDate.Month);
+            // German only covers 1 Thout to 22 Baramhat: a day without stories gets no synaxarium
+            if (synaxarium.Readings.Count > 0)
+                subSections.Add(synaxarium);
+        }
         if (gospelRef != null)
             subSections.Add(await MakePsalmAndGospel(psalmRef, gospelRef));
 
