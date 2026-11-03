@@ -9,7 +9,7 @@ Website https://katameros.app/en/
 
 Front end : https://github.com/pierresaid/katameros-web-app
 
-[What is the coptic lectionary](https://chatgpt.com/?q=What%20is%20the%20coptic%20lectionary)
+[What is the coptic lectionary](https://katameros.app/about/)
 
 ## Usage
 
