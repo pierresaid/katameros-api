@@ -58,7 +58,7 @@ public partial class FeastsFactory
                     await _readingsRepository.MakeOldTestament("23.12:2-13:10"),
                     await _readingsRepository.MakeOldTestament("30.8:9-12"),
                     await _readingsRepository.MakePauline("48.6:14-18"),
-                    await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.38:21,22*@+19.22:17,18,19,8,9"), Tk.A("40.27:27-45", "41.15:26-33", "42.23:26-44", "43.19:1-12")),
+                    await _readingsRepository.MakePsalmsAndGospels(Tk.A("19.38:21,22*@+19.22:17,18,19,8,9"), Tk.A("40.27:27-45", "41.15:26-33", "42.23:26-44", "43.19:13-27")),
                 }
             },
             new Section(SectionType.NinthHour)
